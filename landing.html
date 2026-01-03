@@ -82,6 +82,7 @@
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s;
+            position: relative;
         }
 
         .user-profile:hover {
@@ -91,6 +92,47 @@
         .user-profile i {
             margin-right: 8px;
             font-size: 1.2rem;
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            min-width: 180px;
+            display: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+
+        .user-menu-item {
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-menu-item:hover {
+            background: #f5f7fa;
+            color: #0E6EB8;
+        }
+
+        .user-menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
 
         /* Welcome Message */
@@ -289,6 +331,11 @@
             color: #ff7e30;
         }
 
+        .status-draft {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: #7f8c8d;
+        }
+
         .trip-budget {
             color: #666;
             font-size: 0.9rem;
@@ -425,6 +472,141 @@
             display: none;
         }
 
+        .notification.success {
+            background-color: #27ae60;
+        }
+
+        /* Logout confirmation */
+        .logout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .logout-modal.show {
+            display: flex;
+        }
+
+        .logout-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .logout-content h3 {
+            margin-bottom: 15px;
+            color: #0a1a3a;
+        }
+
+        .logout-content p {
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .logout-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            padding: 10px 25px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-confirm {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .logout-confirm:hover {
+            background-color: #c0392b;
+        }
+
+        .logout-cancel {
+            background-color: #ecf0f1;
+            color: #333;
+        }
+
+        .logout-cancel:hover {
+            background-color: #bdc3c7;
+        }
+
+        /* Trip Created Alert Modal */
+        .alert-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .alert-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .alert-content h3 {
+            margin-bottom: 15px;
+            color: #27ae60;
+        }
+
+        .alert-content p {
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .alert-content .btn {
+            padding: 10px 25px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .alert-content .btn:hover {
+            background-color: #1f6391;
+        }
+
         /* Responsive Design */
         @media (max-width: 900px) {
             .content-wrapper {
@@ -463,19 +645,45 @@
         <div class="overlay"></div>
     </div>
 
+    <!-- Logout Confirmation Modal -->
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-content">
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout from GlobalTrotter?</p>
+            <div class="logout-buttons">
+                <button class="logout-btn logout-confirm" id="confirmLogout">Yes, Logout</button>
+                <button class="logout-btn logout-cancel" id="cancelLogout">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trip Created Alert Modal -->
+    <div class="alert-modal" id="tripAlertModal" style="display: none;">
+        <div class="alert-content">
+            <h3><i class="fas fa-check-circle"></i> Trip Created Successfully!</h3>
+            <p>Your new trip has been added to your upcoming trips. Start planning your adventure!</p>
+            <button class="btn" id="closeAlertBtn">OK</button>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Header with Logo and User Info -->
         <header>
             <div class="logo">Global<span>Trotter</span></div>
-            <div class="user-profile">
+            <div class="user-profile" id="userProfile">
                 <i class="fas fa-user-circle"></i>
-                <span>Sugavaneshwaran</span>
+                <span id="userName">Loading...</span>
+                <div class="user-menu" id="userMenu">
+                    <a href="#" class="user-menu-item"><i class="fas fa-user"></i> My Profile</a>
+                    <a href="#" class="user-menu-item"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="#" class="user-menu-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
             </div>
         </header>
         
         <!-- Welcome Message -->
         <section class="welcome-section">
-            <h1 class="welcome-message">Welcome back, Sugavaneshwaran!</h1>
+            <h1 class="welcome-message" id="welcomeMessage">Welcome back!</h1>
             <p class="welcome-subtext">Ready to plan your next adventure? Here's a summary of your recent trips and recommendations.</p>
         </section>
         
@@ -489,6 +697,7 @@
                 <button class="filter-btn active" data-filter="all"><i class="fas fa-layer-group"></i> All Trips</button>
                 <button class="filter-btn" data-filter="upcoming"><i class="fas fa-plane"></i> Upcoming</button>
                 <button class="filter-btn" data-filter="completed"><i class="fas fa-check-circle"></i> Completed</button>
+                <button class="filter-btn" data-filter="draft"><i class="fas fa-edit"></i> Drafts</button>
             </div>
         </section>
         
@@ -498,7 +707,7 @@
             <div class="left-column">
                 <!-- Recent Trips Section -->
                 <div class="section-title">
-                    Previous Trips
+                    Your Trips
                     <a href="#" class="view-all" id="viewAllTrips">View All</a>
                 </div>
                 
@@ -512,7 +721,7 @@
                 <!-- Plan New Trip Button -->
                 <div class="plan-trip-section">
                     <button class="plan-trip-btn" id="planTripBtn">
-                        <i class="fas fa-plus-circle"></i> Plan a trip
+                        <i class="fas fa-plus-circle"></i> Plan a New Trip
                     </button>
                 </div>
             </div>
@@ -544,50 +753,101 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        // Mock data for demonstration (converted to Indian Rupees)
-        // Using conversion rate: 1 USD = 83 INR (approximate)
-        const mockTrips = [
-            {
-                id: 1,
-                name: "Silky Woodpecker",
-                startDate: "2023-05-15",
-                endDate: "2023-05-22",
-                destination: "Tokyo, Japan",
-                status: "completed",
-                budget: 2800 * 83, // Converted to INR: ₹2,32,400
-                description: "Cultural exploration of Tokyo with visits to temples and modern districts"
-            },
-            {
-                id: 2,
-                name: "Great Owl",
-                startDate: "2023-08-10",
-                endDate: "2023-08-18",
-                destination: "Paris, France",
-                status: "completed",
-                budget: 3200 * 83, // Converted to INR: ₹2,65,600
-                description: "Romantic getaway to the city of lights"
-            },
-            {
-                id: 3,
-                name: "Remarkable Amsterdam",
-                startDate: "2023-10-05",
-                endDate: "2023-10-12",
-                destination: "Amsterdam, Netherlands",
-                status: "completed",
-                budget: 2500 * 83, // Converted to INR: ₹2,07,500
-                description: "Canal tours and museum visits in the Dutch capital"
-            },
-            {
-                id: 4,
-                name: "Authorized Squirrel",
-                startDate: "2023-12-20",
-                endDate: "2023-12-30",
-                destination: "New York, USA",
-                status: "upcoming",
-                budget: 4500 * 83, // Converted to INR: ₹3,73,500
-                description: "New Year celebration in the Big Apple"
+        // Check for new trip flag on page load
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            
+            // Only redirect if user is NOT logged in
+            if (isLoggedIn !== 'true') {
+                alert('Please login first to access the dashboard.');
+                window.location.href = 'login.html';
+                return;
             }
-        ];
+            
+            // Check if a new trip was just created
+            const newTripCreated = localStorage.getItem('newTripCreated');
+            if (newTripCreated === 'true') {
+                // Show the alert modal
+                document.getElementById('tripAlertModal').style.display = 'flex';
+                
+                // Clear the flag
+                localStorage.removeItem('newTripCreated');
+            }
+            
+            // Load dashboard data
+            loadUserData();
+            loadTrips('all');
+            loadDestinations();
+            loadBudgetHighlights();
+            setupEventListeners();
+        });
+
+        // Format Indian Rupees with proper comma separation
+        function formatIndianRupees(amount) {
+            // Convert to string and split into parts
+            let amountStr = Math.round(amount).toString();
+            let lastThree = amountStr.substring(amountStr.length - 3);
+            let otherNumbers = amountStr.substring(0, amountStr.length - 3);
+            
+            if (otherNumbers !== '') {
+                lastThree = ',' + lastThree;
+            }
+            
+            let result = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+            return '₹' + result;
+        }
+
+        // Get trips from localStorage or use mock data
+        function getUserTrips() {
+            const storedTrips = localStorage.getItem('userTrips');
+            if (storedTrips) {
+                return JSON.parse(storedTrips);
+            }
+            
+            // Return mock trips if no stored trips
+            return [
+                {
+                    id: 1,
+                    name: "Silky Woodpecker",
+                    startDate: "2023-05-15",
+                    endDate: "2023-05-22",
+                    destination: "Tokyo, Japan",
+                    status: "completed",
+                    budget: 2800 * 83,
+                    description: "Cultural exploration of Tokyo with visits to temples and modern districts"
+                },
+                {
+                    id: 2,
+                    name: "Great Owl",
+                    startDate: "2023-08-10",
+                    endDate: "2023-08-18",
+                    destination: "Paris, France",
+                    status: "completed",
+                    budget: 3200 * 83,
+                    description: "Romantic getaway to the city of lights"
+                },
+                {
+                    id: 3,
+                    name: "Remarkable Amsterdam",
+                    startDate: "2023-10-05",
+                    endDate: "2023-10-12",
+                    destination: "Amsterdam, Netherlands",
+                    status: "completed",
+                    budget: 2500 * 83,
+                    description: "Canal tours and museum visits in the Dutch capital"
+                },
+                {
+                    id: 4,
+                    name: "Authorized Squirrel",
+                    startDate: "2023-12-20",
+                    endDate: "2023-12-30",
+                    destination: "New York, USA",
+                    status: "upcoming",
+                    budget: 4500 * 83,
+                    description: "New Year celebration in the Big Apple"
+                }
+            ];
+        }
 
         const mockDestinations = [
             {
@@ -630,40 +890,37 @@
         const filterButtons = document.querySelectorAll('.filter-btn');
         const notification = document.getElementById('notification');
         const viewAllTrips = document.getElementById('viewAllTrips');
+        const userNameElement = document.getElementById('userName');
+        const welcomeMessageElement = document.getElementById('welcomeMessage');
+        const userProfile = document.getElementById('userProfile');
+        const userMenu = document.getElementById('userMenu');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const confirmLogout = document.getElementById('confirmLogout');
+        const cancelLogout = document.getElementById('cancelLogout');
+        const tripAlertModal = document.getElementById('tripAlertModal');
+        const closeAlertBtn = document.getElementById('closeAlertBtn');
 
-        // Format Indian Rupees with proper comma separation
-        function formatIndianRupees(amount) {
-            // Convert to string and split into parts
-            let amountStr = Math.round(amount).toString();
-            let lastThree = amountStr.substring(amountStr.length - 3);
-            let otherNumbers = amountStr.substring(0, amountStr.length - 3);
+        function loadUserData() {
+            // Get username from localStorage
+            const username = localStorage.getItem('username') || 'Traveler';
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
             
-            if (otherNumbers !== '') {
-                lastThree = ',' + lastThree;
+            // Update UI with user data
+            userNameElement.textContent = username;
+            welcomeMessageElement.textContent = `Welcome back, ${username.split(' ')[0]}!`;
+            
+            // If we have user data from registration, use it
+            if (userData.firstName) {
+                userNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
+                welcomeMessageElement.textContent = `Welcome back, ${userData.firstName}!`;
             }
-            
-            let result = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
-            return '₹' + result;
         }
 
-        // Initialize the dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load initial data
-            loadTrips('all');
-            loadDestinations();
-            loadBudgetHighlights();
-            
-            // Set up event listeners
-            setupEventListeners();
-        });
-
         function setupEventListeners() {
-            // Plan New Trip button
+            // Plan New Trip button - REDIRECT TO PLAN.HTML
             planTripBtn.addEventListener('click', function() {
-                showNotification('Opening trip planner...');
-                setTimeout(() => {
-                    showNotification('Trip planner ready! Start planning your adventure.');
-                }, 500);
+                window.location.href = 'plan.html';
             });
             
             // Filter buttons
@@ -695,9 +952,49 @@
                 loadTrips('all');
             });
             
-            // User profile click
-            document.querySelector('.user-profile').addEventListener('click', function() {
-                showNotification('Opening user profile settings');
+            // User profile menu
+            userProfile.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userMenu.classList.toggle('show');
+            });
+            
+            // Close user menu when clicking outside
+            document.addEventListener('click', function() {
+                userMenu.classList.remove('show');
+            });
+            
+            // Logout button
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                logoutModal.classList.add('show');
+            });
+            
+            // Logout confirmation
+            confirmLogout.addEventListener('click', function() {
+                // Clear login data
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userData');
+                localStorage.removeItem('rememberMe');
+                
+                // Show logout message
+                showNotification('Logout successful! Redirecting to login page...', 'success');
+                
+                // Redirect to login page after 1 second
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1000);
+            });
+            
+            // Cancel logout
+            cancelLogout.addEventListener('click', function() {
+                logoutModal.classList.remove('show');
+            });
+            
+            // Close alert modal
+            closeAlertBtn.addEventListener('click', function() {
+                tripAlertModal.style.display = 'none';
             });
         }
 
@@ -707,11 +1004,15 @@
             
             // Simulate API call delay
             setTimeout(() => {
-                let filteredTrips = mockTrips;
+                let allTrips = getUserTrips();
+                let filteredTrips = allTrips;
                 
                 if (filter !== 'all') {
-                    filteredTrips = mockTrips.filter(trip => trip.status === filter);
+                    filteredTrips = allTrips.filter(trip => trip.status === filter);
                 }
+                
+                // Sort trips by date (newest first)
+                filteredTrips.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
                 
                 // Render trips
                 renderTrips(filteredTrips);
@@ -740,7 +1041,7 @@
                             <div class="trip-destination"><i class="fas fa-map-marker-alt"></i> ${trip.destination}</div>
                             <div class="trip-status status-${trip.status}">${trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}</div>
                             <div class="trip-budget"><i class="fas fa-wallet"></i> Budget: ${formatIndianRupees(trip.budget)}</div>
-                            <p style="margin-top: 10px; font-size: 0.9rem; color: #777;">${trip.description}</p>
+                            <p style="margin-top: 10px; font-size: 0.9rem; color: #777;">${trip.description || 'No description provided.'}</p>
                         </div>
                     </div>
                 `;
@@ -752,8 +1053,9 @@
             document.querySelectorAll('.trip-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const tripId = this.getAttribute('data-id');
-                    const trip = mockTrips.find(t => t.id == tripId);
-                    showNotification(`Opening details for: ${trip.name}`);
+                    const allTrips = getUserTrips();
+                    const trip = allTrips.find(t => t.id == tripId);
+                    showNotification(`Opening details for: ${trip.name}`, 'success');
                 });
             });
         }
@@ -790,15 +1092,16 @@
                 card.addEventListener('click', function() {
                     const destinationId = this.getAttribute('data-id');
                     const destination = mockDestinations.find(d => d.id == destinationId);
-                    showNotification(`Exploring ${destination.name}...`);
+                    showNotification(`Exploring ${destination.name}...`, 'success');
                 });
             });
         }
 
         function loadBudgetHighlights() {
-            // Calculate budget data from trips
-            const completedTrips = mockTrips.filter(trip => trip.status === 'completed');
-            const upcomingTrips = mockTrips.filter(trip => trip.status === 'upcoming');
+            // Get all trips
+            const allTrips = getUserTrips();
+            const completedTrips = allTrips.filter(trip => trip.status === 'completed');
+            const upcomingTrips = allTrips.filter(trip => trip.status === 'upcoming');
             
             const totalSpent = completedTrips.reduce((sum, trip) => sum + trip.budget, 0);
             const upcomingCost = upcomingTrips.reduce((sum, trip) => sum + trip.budget, 0);
@@ -808,7 +1111,7 @@
             // Render budget highlights
             const budgetHTML = `
                 <div class="budget-item">
-                    <span class="budget-label"><i class="fas fa-money-bill-wave"></i> Total Spent (2023)</span>
+                    <span class="budget-label"><i class="fas fa-money-bill-wave"></i> Total Spent</span>
                     <span class="budget-amount">${formatIndianRupees(totalSpent)}</span>
                 </div>
                 <div class="budget-item">
@@ -836,20 +1139,27 @@
                 return;
             }
             
-            showNotification(`Searching for "${searchTerm}"...`);
+            showNotification(`Searching for "${searchTerm}"...`, 'success');
             
             // Filter trips based on search term
-            const filteredTrips = mockTrips.filter(trip => 
+            const allTrips = getUserTrips();
+            const filteredTrips = allTrips.filter(trip => 
                 trip.name.toLowerCase().includes(searchTerm) || 
                 trip.destination.toLowerCase().includes(searchTerm) ||
-                trip.description.toLowerCase().includes(searchTerm)
+                (trip.description && trip.description.toLowerCase().includes(searchTerm))
             );
             
             renderTrips(filteredTrips);
         }
 
-        function showNotification(message) {
+        function showNotification(message, type = 'info') {
             notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'success') {
+                notification.classList.add('success');
+            }
+            
             notification.style.display = 'block';
             
             setTimeout(() => {
