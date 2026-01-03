@@ -86,6 +86,7 @@
 
         .user-profile:hover {
             background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .user-profile i {
@@ -368,7 +369,7 @@
         <!-- Header with logo and user profile -->
         <header>
             <div class="logo">Global<span>Trotter</span></div>
-            <div class="user-profile">
+            <div class="user-profile" id="userProfile">
                 <i class="fas fa-user-circle"></i>
                 <span>Traveler Profile</span>
             </div>
@@ -544,9 +545,12 @@
                 });
             });
             
-            // User profile click
-            document.querySelector('.user-profile').addEventListener('click', function() {
-                alert('Opening user profile settings');
+            // User profile click - FIXED
+            const userProfile = document.getElementById('userProfile');
+            userProfile.addEventListener('click', function() {
+                alert('Navigating to User Profile page...');
+                // In a real app, this would navigate to the profile page
+                window.location.href = 'profile.html';
             });
         });
     </script>
