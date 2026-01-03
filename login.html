@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Trotter | Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: 
+                linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80')
+                no-repeat center center/cover;
+        }
+
+        .container {
+            width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 45px 35px;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            color: #0E6EB8;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 26px;
+            color: #0E6EB8;
+        }
+
+        .logo span {
+            color: #FF7E30;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .input-group input:focus {
+            border-color: #0E6EB8;
+            outline: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #777;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .forgot-password {
+            color: #0E6EB8;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #0E6EB8, #1E90FF);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(to right, #0d5fa1, #1a7fd9);
+        }
+
+        .register-redirect {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .register-redirect a {
+            color: #0E6EB8;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-redirect a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-globe-americas"></i>
+        </div>
+        <h1>Global<span>Trotter</span></h1>
+    </div>
+
+    <p class="tagline">Login to continue your journey</p>
+
+    <form>
+        <h2 class="form-title">Welcome Back</h2>
+
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Username or Email" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="password-toggle" id="togglePassword">
+                <i class="far fa-eye"></i>
+            </span>
+        </div>
+
+        <div class="options">
+            <label><input type="checkbox"> Remember me</label>
+        </div>
+
+        <button class="login-button">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+
+    <!-- Redirect link ONLY -->
+    <div class="register-redirect">
+        New user? <a href="register.html">Create an account</a>
+    </div>
+</div>
+
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const icon = togglePassword.querySelector('i');
+
+    togglePassword.addEventListener('click', () => {
+        password.type = password.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+</script>
+
+</body>
+</html>
