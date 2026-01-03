@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobeTrotter | Calendar View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f5f7fa;
+        }
+
+        .search-bar button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #1f6391;
+        }
+
+        /* Filter controls */
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .controls-left span {
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .controls-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .control-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Calendar header */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .calendar-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0a1a3a;
+        }
+
+        .nav-btn {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #1f6391;
+            transform: scale(1.1);
+        }
+
+        .calendar-view-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .view-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .view-btn.active {
+            background-color: #2980b9;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        /* Calendar grid */
+        .calendar-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .weekday {
+            padding: 15px;
+            font-weight: 600;
+            color: #0a1a3a;
+            background-color: #f5f7fa;
+            border-radius: 6px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            min-height: 120px;
+            background-color: white;
+            border: 1px solid #eaeaea;
+            border-radius: 6px;
+            padding: 10px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .calendar-day:hover {
+            background-color: #f9f9f9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .calendar-day.empty {
+            background-color: #f8f9fa;
+            border: 1px dashed #ddd;
+        }
+
+        .day-number {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f7fa;
+            border-radius: 50%;
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .calendar-day.current-day .day-number {
+            background-color: #ff7e30;
+            color: white;
+        }
+
+        .calendar-events {
+            margin-top: 35px;
+            max-height: 85px;
+            overflow-y: auto;
+        }
+
+        .calendar-event {
+            padding: 8px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            padding-left: 10px;
+            border-left: 3px solid;
+        }
+
+        .calendar-event:hover {
+            transform: translateX(3px);
+        }
+
+        .event-paris {
+            background-color: rgba(41, 128, 185, 0.1);
+            border-left-color: #2980b9;
+        }
+
+        .event-rome {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-left-color: #2ecc71;
+        }
+
+        .event-barcelona {
+            background-color: rgba(155, 89, 182, 0.1);
+            border-left-color: #9b59b6;
+        }
+
+        .event-amsterdam {
+            background-color: rgba(241, 196, 15, 0.1);
+            border-left-color: #f1c40f;
+        }
+
+        .event-berlin {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left-color: #e74c3c;
+        }
+
+        .event-details {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #0a1a3a;
+        }
+
+        .event-location {
+            font-size: 0.75rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Trip summary section */
+        .trip-summary {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .trip-summary h3 {
+            color: #0a1a3a;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff7e30;
+        }
+
+        .trip-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .trip-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid;
+            transition: all 0.3s;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .trip-card.paris {
+            border-left-color: #2980b9;
+        }
+
+        .trip-card.rome {
+            border-left-color: #2ecc71;
+        }
+
+        .trip-card.barcelona {
+            border-left-color: #9b59b6;
+        }
+
+        .trip-card.amsterdam {
+            border-left-color: #f1c40f;
+        }
+
+        .trip-card.berlin {
+            border-left-color: #e74c3c;
+        }
+
+        .trip-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .trip-card-title {
+            font-weight: 700;
+            color: #0a1a3a;
+            font-size: 1.1rem;
+        }
+
+        .trip-duration {
+            background-color: #f5f7fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .trip-activities {
+            margin-top: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #e3f2fd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2980b9;
+            font-size: 14px;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-name {
+            font-weight: 500;
+            color: #0a1a3a;
+            font-size: 0.9rem;
+        }
+
+        .activity-cost {
+            font-weight: 600;
+            color: #0a1a3a;
+            font-size: 0.9rem;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .primary-btn {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background-color: #1f6391;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+        }
+
+        .secondary-btn {
+            background-color: white;
+            color: #0a1a3a;
+            border: 2px solid #ff7e30;
+        }
+
+        .secondary-btn:hover {
+            background-color: #fff3e0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 126, 48, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .calendar-days {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .trip-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls-container {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .calendar-days {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .trip-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .calendar-days {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .calendar-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .calendar-view-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and user profile -->
+        <header>
+            <div class="logo">Globe<span>Trotter</span></div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Traveler Profile</span>
+            </div>
+        </header>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search trips, destinations, or activities...">
+                <button><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <!-- Filter controls -->
+        <div class="controls-container">
+            <div class="controls-left">
+                <span>Group by:</span>
+                <button class="control-btn active"><i class="fas fa-calendar-alt"></i> Day</button>
+                <button class="control-btn"><i class="fas fa-city"></i> City</button>
+                <button class="control-btn"><i class="fas fa-tags"></i> Category</button>
+            </div>
+            <div class="controls-right">
+                <button class="control-btn"><i class="fas fa-filter"></i> Filter</button>
+                <button class="control-btn active"><i class="fas fa-sort-amount-down"></i> Sort</button>
+            </div>
+        </div>
+
+        <!-- Calendar Header -->
+        <div class="calendar-header">
+            <div class="calendar-nav">
+                <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="calendar-title">January 2024</div>
+                <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="calendar-view-buttons">
+                <button class="view-btn active">Month</button>
+                <button class="view-btn">Week</button>
+                <button class="view-btn">Day</button>
+            </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="calendar-container">
+            <div class="calendar-weekdays">
+                <div class="weekday">SUN</div>
+                <div class="weekday">MON</div>
+                <div class="weekday">TUE</div>
+                <div class="weekday">WED</div>
+                <div class="weekday">THU</div>
+                <div class="weekday">FRI</div>
+                <div class="weekday">SAT</div>
+            </div>
+            
+            <div class="calendar-days">
+                <!-- Empty days for January 2024 (starts on Monday) -->
+                <div class="calendar-day empty">
+                    <div class="day-number">31</div>
+                </div>
+                
+                <!-- Day 1-31 -->
+                <div class="calendar-day">
+                    <div class="day-number">1</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="day-number">2</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="day-number">3</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="day-number">4</div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="day-number">5</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-paris">
+                            <div class="event-details">Paris Trip</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Paris, France</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calendar-day">
+                    <div class="day-number">6</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-paris">
+                            <div class="event-details">Flight Arrival</div>
+                            <div class="event-location"><i class="fas fa-plane"></i> Paris</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 7 -->
+                <div class="calendar-day">
+                    <div class="day-number">7</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-paris">
+                            <div class="event-details">Eiffel Tower</div>
+                            <div class="event-location"><i class="fas fa-landmark"></i> Paris</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 8 -->
+                <div class="calendar-day">
+                    <div class="day-number">8</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-paris">
+                            <div class="event-details">Louvre Museum</div>
+                            <div class="event-location"><i class="fas fa-ticket-alt"></i> Paris</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 9 -->
+                <div class="calendar-day">
+                    <div class="day-number">9</div>
+                </div>
+                
+                <!-- Day 10 -->
+                <div class="calendar-day">
+                    <div class="day-number">10</div>
+                </div>
+                
+                <!-- Day 11 -->
+                <div class="calendar-day">
+                    <div class="day-number">11</div>
+                </div>
+                
+                <!-- Day 12 -->
+                <div class="calendar-day">
+                    <div class="day-number">12</div>
+                </div>
+                
+                <!-- Day 13 -->
+                <div class="calendar-day">
+                    <div class="day-number">13</div>
+                </div>
+                
+                <!-- Day 14 -->
+                <div class="calendar-day">
+                    <div class="day-number">14</div>
+                </div>
+                
+                <!-- Day 15 -->
+                <div class="calendar-day current-day">
+                    <div class="day-number">15</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-paris">
+                            <div class="event-details">Paris Trip Ends</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Paris</div>
+                        </div>
+                        <div class="calendar-event event-rome">
+                            <div class="event-details">Rome Trip</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Rome, Italy</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 16 -->
+                <div class="calendar-day">
+                    <div class="day-number">16</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-rome">
+                            <div class="event-details">Train to Rome</div>
+                            <div class="event-location"><i class="fas fa-train"></i> Paris → Rome</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 17 -->
+                <div class="calendar-day">
+                    <div class="day-number">17</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-rome">
+                            <div class="event-details">Colosseum Tour</div>
+                            <div class="event-location"><i class="fas fa-landmark"></i> Rome</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 18 -->
+                <div class="calendar-day">
+                    <div class="day-number">18</div>
+                </div>
+                
+                <!-- Day 19 -->
+                <div class="calendar-day">
+                    <div class="day-number">19</div>
+                </div>
+                
+                <!-- Day 20 -->
+                <div class="calendar-day">
+                    <div class="day-number">20</div>
+                </div>
+                
+                <!-- Day 21 -->
+                <div class="calendar-day">
+                    <div class="day-number">21</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-rome">
+                            <div class="event-details">Vatican City</div>
+                            <div class="event-location"><i class="fas fa-church"></i> Rome</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 22 -->
+                <div class="calendar-day">
+                    <div class="day-number">22</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-rome">
+                            <div class="event-details">Rome Trip Ends</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Rome</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 23 -->
+                <div class="calendar-day">
+                    <div class="day-number">23</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-barcelona">
+                            <div class="event-details">Barcelona Trip</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Barcelona, Spain</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 24 -->
+                <div class="calendar-day">
+                    <div class="day-number">24</div>
+                </div>
+                
+                <!-- Day 25 -->
+                <div class="calendar-day">
+                    <div class="day-number">25</div>
+                </div>
+                
+                <!-- Day 26 -->
+                <div class="calendar-day">
+                    <div class="day-number">26</div>
+                </div>
+                
+                <!-- Day 27 -->
+                <div class="calendar-day">
+                    <div class="day-number">27</div>
+                </div>
+                
+                <!-- Day 28 -->
+                <div class="calendar-day">
+                    <div class="day-number">28</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-amsterdam">
+                            <div class="event-details">Amsterdam Trip</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Amsterdam, Netherlands</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 29 -->
+                <div class="calendar-day">
+                    <div class="day-number">29</div>
+                </div>
+                
+                <!-- Day 30 -->
+                <div class="calendar-day">
+                    <div class="day-number">30</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-berlin">
+                            <div class="event-details">Berlin Trip</div>
+                            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Berlin, Germany</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Day 31 -->
+                <div class="calendar-day">
+                    <div class="day-number">31</div>
+                    <div class="calendar-events">
+                        <div class="calendar-event event-berlin">
+                            <div class="event-details">Berlin Exploration</div>
+                            <div class="event-location"><i class="fas fa-landmark"></i> Berlin</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Summary Section -->
+        <div class="trip-summary">
+            <h3><i class="fas fa-suitcase"></i> European Adventure - Trip Summary</h3>
+            <div class="trip-cards">
+                <!-- Paris Trip -->
+                <div class="trip-card paris">
+                    <div class="trip-card-header">
+                        <div class="trip-card-title">Paris, France</div>
+                        <div class="trip-duration">Jan 5 - Jan 15</div>
+                    </div>
+                    <div class="trip-activities">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div class="activity-details">Flight to Paris</div>
+                            <div class="activity-cost">₹65,000</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-hotel"></i>
+                            </div>
+                            <div class="activity-details">Hotel (4 nights)</div>
+                            <div class="activity-cost">₹48,000</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div class="activity-details">Eiffel Tower</div>
+                            <div class="activity-cost">₹4,200</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rome Trip -->
+                <div class="trip-card rome">
+                    <div class="trip-card-header">
+                        <div class="trip-card-title">Rome, Italy</div>
+                        <div class="trip-duration">Jan 15 - Jan 22</div>
+                    </div>
+                    <div class="trip-activities">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-train"></i>
+                            </div>
+                            <div class="activity-details">Train to Rome</div>
+                            <div class="activity-cost">₹18,500</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-hotel"></i>
+                            </div>
+                            <div class="activity-details">Hotel (3 nights)</div>
+                            <div class="activity-cost">₹31,500</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div class="activity-details">Colosseum Tour</div>
+                            <div class="activity-cost">₹3,500</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Barcelona Trip -->
+                <div class="trip-card barcelona">
+                    <div class="trip-card-header">
+                        <div class="trip-card-title">Barcelona, Spain</div>
+                        <div class="trip-duration">Jan 23 - Jan 27</div>
+                    </div>
+                    <div class="trip-activities">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div class="activity-details">Flight to Barcelona</div>
+                            <div class="activity-cost">₹12,000</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-hotel"></i>
+                            </div>
+                            <div class="activity-details">Hotel (3 nights)</div>
+                            <div class="activity-cost">₹27,000</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="activity-details">Tapas Tour</div>
+                            <div class="activity-cost">₹4,500</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn primary-btn">
+                <i class="fas fa-plus-circle"></i> Add New Trip
+            </button>
+            <button class="action-btn secondary-btn">
+                <i class="fas fa-edit"></i> Edit Itinerary
+            </button>
+            <button class="action-btn primary-btn">
+                <i class="fas fa-share-alt"></i> Share Calendar
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>GlobeTrotter Calendar View • Showing itinerary from European Adventure • Updated: January 15, 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        // Interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // User profile click
+            document.querySelector('.user-profile').addEventListener('click', function() {
+                alert('Opening user profile settings');
+            });
+            
+            // Control buttons interaction
+            document.querySelectorAll('.control-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Don't remove active class from all if it's filter or sort
+                    if (!this.classList.contains('active')) {
+                        // Remove active class from siblings
+                        const siblings = Array.from(this.parentElement.children);
+                        siblings.forEach(sibling => {
+                            if (sibling !== this && sibling.classList.contains('control-btn')) {
+                                sibling.classList.remove('active');
+                            }
+                        });
+                        
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // View buttons interaction
+            document.querySelectorAll('.view-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.view-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Calendar navigation
+            document.querySelectorAll('.nav-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const title = document.querySelector('.calendar-title');
+                    const direction = this.querySelector('i').classList.contains('fa-chevron-left') ? 'previous' : 'next';
+                    
+                    if (direction === 'previous') {
+                        alert('Navigating to previous month');
+                    } else {
+                        alert('Navigating to next month');
+                    }
+                });
+            });
+            
+            // Calendar event clicks
+            document.querySelectorAll('.calendar-event').forEach(event => {
+                event.addEventListener('click', function() {
+                    const eventText = this.querySelector('.event-details').textContent;
+                    alert(`Viewing details for: ${eventText}`);
+                });
+            });
+            
+            // Trip card clicks
+            document.querySelectorAll('.trip-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const title = this.querySelector('.trip-card-title').textContent;
+                    alert(`Opening trip details for: ${title}`);
+                });
+            });
+            
+            // Action button functionality
+            document.querySelectorAll('.action-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const buttonText = this.textContent.trim();
+                    alert(`Action: ${buttonText}`);
+                });
+            });
+            
+            // Set current day
+            const today = new Date();
+            if (today.getMonth() === 0 && today.getFullYear() === 2026) {
+                const currentDay = today.getDate();
+                const dayElements = document.querySelectorAll('.day-number');
+                dayElements.forEach(element => {
+                    if (parseInt(element.textContent) === currentDay) {
+                        element.parentElement.classList.add('current-day');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
