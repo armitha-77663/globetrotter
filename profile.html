@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Trotter | User Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 126, 48, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .back-btn:hover {
+            background-color: rgba(255, 126, 48, 1);
+            transform: translateY(-2px);
+        }
+
+        .back-btn i {
+            margin-right: 8px;
+        }
+
+        /* Main content layout */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* User profile section */
+        .profile-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 5px solid #2980b9;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            margin-bottom: 5px;
+        }
+
+        .profile-title {
+            font-size: 1.1rem;
+            color: #ff7e30;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* User details form */
+        .user-details {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #0a1a3a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff7e30;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f8f9fa;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #2980b9;
+            outline: none;
+            background-color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .save-btn, .edit-btn, .cancel-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .save-btn {
+            background-color: #2980b9;
+            color: white;
+            flex: 1;
+        }
+
+        .save-btn:hover {
+            background-color: #1f6391;
+        }
+
+        .edit-btn {
+            background-color: #ff7e30;
+            color: white;
+            flex: 1;
+        }
+
+        .edit-btn:hover {
+            background-color: #e66b1f;
+        }
+
+        .cancel-btn {
+            background-color: #f5f7fa;
+            color: #0a1a3a;
+            border: 1px solid #ddd;
+            flex: 1;
+        }
+
+        .cancel-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        /* Trips section */
+        .trips-section {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .trips-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .trips-category {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .trips-category h3 {
+            font-size: 1.5rem;
+            color: #0a1a3a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff7e30;
+            font-weight: 700;
+        }
+
+        .trips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .trip-item {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #2980b9;
+            transition: all 0.3s;
+        }
+
+        .trip-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: #f0f4f8;
+        }
+
+        .trip-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            margin-bottom: 10px;
+        }
+
+        .trip-dates {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .trip-dates i {
+            color: #ff7e30;
+            margin-right: 5px;
+        }
+
+        .trip-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .status-preplanned {
+            background-color: #3498db;
+        }
+
+        .status-previous {
+            background-color: #7f8c8d;
+        }
+
+        .trip-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .view-btn {
+            background-color: #2980b9;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .view-btn:hover {
+            background-color: #1f6391;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        footer a {
+            color: #ff7e30;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .profile-section, .trips-section {
+                width: 100%;
+            }
+            
+            .trips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and back button -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <button class="back-btn" id="backButton">
+                <i class="fas fa-arrow-left"></i> Back to Trip Listing
+            </button>
+        </header>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- User profile section -->
+            <div class="profile-section">
+                <div class="profile-header">
+                    <div class="profile-image">
+                        <img src="C:\Users\jayas\globetrotter\Screenshot 2026-01-03 114848.png" alt="User Profile Image">
+                    </div>
+                    <h1 class="profile-name">Amused Swallow</h1>
+                    <div class="profile-title">Adventure Enthusiast</div>
+                </div>
+
+                <div class="user-details">
+                    <h2 class="section-title">User Details</h2>
+                    <form id="userForm">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" value="Amused Swallow" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" value="amused.swallow@example.com" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" value="+1 (555) 123-4567" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" value="San Francisco, CA" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bio">Bio / Travel Philosophy</label>
+                            <textarea id="bio" rows="4" readonly>Avid traveler who believes the best stories come from unexpected journeys. Passionate about cultural immersion and sustainable tourism. Always looking for the road less traveled.</textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="edit-btn" id="editButton">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                            <button type="submit" class="save-btn" id="saveButton" style="display: none;">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                            <button type="button" class="cancel-btn" id="cancelButton" style="display: none;">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Trips section -->
+            <div class="trips-section">
+                <div class="trips-container">
+                    <!-- Preplanned Trips -->
+                    <div class="trips-category">
+                        <h3>Preplanned Trips</h3>
+                        <div class="trips-grid">
+                            <div class="trip-item">
+                                <div class="trip-name">Fancy Heron</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Aug 15 - 30, 2023
+                                </div>
+                                <div class="trip-status status-preplanned">Preplanned</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Fancy Heron">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="trip-item">
+                                <div class="trip-name">Dearest Badger</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Sep 10 - 25, 2023
+                                </div>
+                                <div class="trip-status status-preplanned">Preplanned</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Dearest Badger">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="trip-item">
+                                <div class="trip-name">Soulful Fly</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Oct 5 - 20, 2023
+                                </div>
+                                <div class="trip-status status-preplanned">Preplanned</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Soulful Fly">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="trip-item">
+                                <div class="trip-name">Vicky</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Nov 12 - 27, 2023
+                                </div>
+                                <div class="trip-status status-preplanned">Preplanned</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Vicky">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Previous Trips -->
+                    <div class="trips-category">
+                        <h3>Previous Trips</h3>
+                        <div class="trips-grid">
+                            <div class="trip-item">
+                                <div class="trip-name">Adorable Quail</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> May 3 - 18, 2023
+                                </div>
+                                <div class="trip-status status-previous">Completed</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Adorable Quail">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="trip-item">
+                                <div class="trip-name">Majestic Eagle</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Mar 20 - Apr 5, 2023
+                                </div>
+                                <div class="trip-status status-previous">Completed</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Majestic Eagle">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="trip-item">
+                                <div class="trip-name">Wandering Owl</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Jan 15 - 30, 2023
+                                </div>
+                                <div class="trip-status status-previous">Completed</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Wandering Owl">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="trip-item">
+                                <div class="trip-name">Silent Falcon</div>
+                                <div class="trip-dates">
+                                    <i class="fas fa-calendar-alt"></i> Dec 10 - 25, 2022
+                                </div>
+                                <div class="trip-status status-previous">Completed</div>
+                                <div class="trip-actions">
+                                    <button class="view-btn" data-trip="Silent Falcon">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Global Trotter &copy; 2023 | Your Journey, Our Passion | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Form elements
+            const userForm = document.getElementById('userForm');
+            const formInputs = userForm.querySelectorAll('input, textarea, select');
+            const editButton = document.getElementById('editButton');
+            const saveButton = document.getElementById('saveButton');
+            const cancelButton = document.getElementById('cancelButton');
+            
+            // Back button
+            const backButton = document.getElementById('backButton');
+            
+            // View trip buttons
+            const viewButtons = document.querySelectorAll('.view-btn');
+            
+            // Edit profile functionality
+            let isEditing = false;
+            
+            editButton.addEventListener('click', function() {
+                if (!isEditing) {
+                    // Enable editing
+                    formInputs.forEach(input => {
+                        input.readOnly = false;
+                        input.disabled = false;
+                    });
+                    
+                    // Show save and cancel buttons, hide edit button
+                    editButton.style.display = 'none';
+                    saveButton.style.display = 'block';
+                    cancelButton.style.display = 'block';
+                    
+                    // Change form border colors to indicate editing
+                    formInputs.forEach(input => {
+                        input.style.borderColor = '#ff7e30';
+                        input.style.backgroundColor = '#fff';
+                    });
+                    
+                    isEditing = true;
+                }
+            });
+            
+            // Save changes
+            saveButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // In a real app, you would send data to server here
+                
+                // Disable editing
+                formInputs.forEach(input => {
+                    input.readOnly = true;
+                    input.disabled = false;
+                    input.style.borderColor = '#ddd';
+                    input.style.backgroundColor = '#f8f9fa';
+                });
+                
+                // Show edit button, hide save and cancel buttons
+                editButton.style.display = 'block';
+                saveButton.style.display = 'none';
+                cancelButton.style.display = 'none';
+                
+                isEditing = false;
+                
+                // Show success message
+                alert('Profile updated successfully!');
+            });
+            
+            // Cancel editing
+            cancelButton.addEventListener('click', function() {
+                // Reset form to original values
+                document.getElementById('fullName').value = 'sameer agarwal';
+                document.getElementById('email').value = 'sameeragarwal@example.com';
+                document.getElementById('phone').value = '+91 9987654321';
+                document.getElementById('location').value = 'mumbai maharashtra'
+                document.getElementById('bio').value = 'Avid traveler who believes the best stories come from unexpected journeys. Passionate about cultural immersion and sustainable tourism. Always looking for the road less traveled.';
+                
+                // Disable editing
+                formInputs.forEach(input => {
+                    input.readOnly = true;
+                    input.disabled = false;
+                    input.style.borderColor = '#ddd';
+                    input.style.backgroundColor = '#f8f9fa';
+                });
+                
+                // Show edit button, hide save and cancel buttons
+                editButton.style.display = 'block';
+                saveButton.style.display = 'none';
+                cancelButton.style.display = 'none';
+                
+                isEditing = false;
+            });
+            
+            // Back button functionality
+            backButton.addEventListener('click', function() {
+                alert('Returning to Trip Listing page...');
+                // In a real app, this would navigate to the trip listing page
+                window.location.href = 'usertrip.html';
+            });
+            
+            // View trip buttons functionality
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tripName = this.getAttribute('data-trip');
+                    alert(`Viewing details for trip: ${tripName}`);
+                    // In a real app, this would open a modal or navigate to trip details
+                });
+            });
+            
+            // Form submission prevention
+            userForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
