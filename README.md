@@ -1,8 +1,6 @@
 # globetrotter
 
-Globetrotter is a personalised travel planning application aiming to simplfy travel planning.
-<<<<<<< HEAD
-armitha
-=======
-
->>>>>>> 9f665b3 (Update README.md)
+My contribution in this project:
+- frontend of webpages 9 to 12
+- MySql database creation
+- linking database with backend api
