@@ -151,10 +151,13 @@
             font-weight: 600;
             cursor: pointer;
             margin-top: 10px;
+            transition: all 0.3s;
         }
 
         .register-button:hover {
             background: linear-gradient(to right, #0d5fa1, #1a7fd9);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 110, 184, 0.3);
         }
 
         .login-redirect {
@@ -228,33 +231,34 @@
         <div class="input-group double">
             <div class="input-field">
                 <i class="fas fa-user"></i>
-                <input type="text" placeholder="First Name" required>
+                <input type="text" id="firstName" placeholder="First Name" required>
             </div>
             <div class="input-field">
                 <i class="fas fa-user"></i>
-                <input type="text" placeholder="Last Name" required>
+                <input type="text" id="lastName" placeholder="Last Name" required>
             </div>
         </div>
 
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="email" placeholder="Email Address" required>
+            <input type="email" id="email" placeholder="Email Address" required>
         </div>
 
         <div class="input-group">
             <i class="fas fa-phone"></i>
-            <input type="tel" placeholder="Phone Number">
+            <input type="tel" id="phone" placeholder="Phone Number">
         </div>
 
         <div class="input-group double">
             <div class="input-field">
                 <i class="fas fa-city"></i>
-                <input type="text" placeholder="City">
+                <input type="text" id="city" placeholder="City">
             </div>
             <div class="input-field">
                 <i class="fas fa-globe"></i>
-                <select>
+                <select id="country">
                     <option value="" disabled selected>Select Country</option>
+                    <option value="india">India</option>
                     <option value="usa">United States</option>
                     <option value="uk">United Kingdom</option>
                     <option value="canada">Canada</option>
@@ -269,7 +273,7 @@
 
         <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="password" placeholder="Password" required minlength="6">
             <span class="password-toggle" id="togglePassword">
                 <i class="far fa-eye"></i>
             </span>
@@ -277,7 +281,7 @@
 
         <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required minlength="6">
             <span class="password-toggle" id="toggleConfirmPassword">
                 <i class="far fa-eye"></i>
             </span>
@@ -285,7 +289,7 @@
 
         <div class="input-group">
             <i class="fas fa-info-circle"></i>
-            <textarea placeholder="Additional Information (Optional)"></textarea>
+            <textarea id="additionalInfo" placeholder="Additional Information (Optional)"></textarea>
         </div>
 
         <div class="terms-checkbox">
@@ -322,11 +326,14 @@
     togglePassword.addEventListener('click', () => togglePasswordVisibility(password, togglePassword));
     toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPassword, toggleConfirmPassword));
 
-    // Form validation
+    // Form validation and submission
     document.getElementById('registerForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         // Get form values
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
         const passwordValue = password.value;
         const confirmPasswordValue = confirmPassword.value;
         const termsChecked = document.getElementById('terms').checked;
@@ -338,18 +345,55 @@
             return;
         }
         
+        // Validate password length
+        if (passwordValue.length < 6) {
+            alert("Password must be at least 6 characters long.");
+            password.focus();
+            return;
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            document.getElementById('email').focus();
+            return;
+        }
+        
         // Validate terms agreement
         if (!termsChecked) {
             alert("You must agree to the Terms of Service and Privacy Policy.");
             return;
         }
         
-        // If all validation passes
-        alert("Account created successfully! You can now login.");
-        // In a real application, you would submit the form data to a server here
-        // For this example, we'll just reset the form
-        this.reset();
+        // Store user data in localStorage (for demo purposes)
+        const userData = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: document.getElementById('phone').value,
+            city: document.getElementById('city').value,
+            country: document.getElementById('country').value,
+            additionalInfo: document.getElementById('additionalInfo').value
+        };
+        
+        localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('username', firstName + ' ' + lastName);
+        
+        // Show success message
+        alert("Account created successfully! You will be redirected to the dashboard.");
+        
+        // Redirect to landing page after 1.5 seconds
+        setTimeout(() => {
+            window.location.href = 'landing.html';
+        }, 1500);
     });
+    
+    // NO AUTO-REDIRECT - User stays on register page
+    // window.addEventListener('load', function() {
+    //   // Auto-redirect code removed
+    // });
 </script>
 
 </body>
