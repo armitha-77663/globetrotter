@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobeTrotter | Trip Budget</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f5f7fa;
+        }
+
+        .search-bar button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #1f6391;
+        }
+
+        /* Main content layout */
+        .main-content {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 280px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 25px 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .filter-section, .sort-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-section h3, .sort-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #0a1a3a;
+            font-weight: 700;
+            border-bottom: 2px solid #ff7e30;
+            padding-bottom: 8px;
+        }
+
+        .filter-btn, .sort-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #0a1a3a;
+        }
+
+        .filter-btn:hover, .sort-btn:hover {
+            background-color: #e8ecf1;
+            transform: translateX(5px);
+        }
+
+        .filter-btn.active, .sort-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Content area styling */
+        .content {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 750px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ff7e30;
+        }
+
+        .page-title h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title p {
+            color: #555;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-btn {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background-color: #1f6391;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.4);
+        }
+
+        .secondary-btn {
+            background-color: white;
+            color: #0a1a3a;
+            border: 2px solid #ff7e30;
+        }
+
+        .secondary-btn:hover {
+            background-color: #fff3e0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 126, 48, 0.3);
+        }
+
+        /* Day-wise Expenses Section */
+        .days-container {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: #0a1a3a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .day-card {
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #2980b9;
+        }
+
+        .day-header {
+            background: linear-gradient(to right, #f5f7fa, #e8ecf1);
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .day-header:hover {
+            background: linear-gradient(to right, #e8ecf1, #dbe2e9);
+        }
+
+        .day-header h3 {
+            font-size: 1.2rem;
+            color: #0a1a3a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .day-total {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2980b9;
+            background-color: #e3f2fd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #bbdefb;
+        }
+
+        .day-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+        }
+
+        .day-content.expanded {
+            padding: 25px;
+            max-height: 1000px;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px dashed #eee;
+            transition: all 0.2s;
+        }
+
+        .activity-item:hover {
+            background-color: #f8f9fa;
+            padding-left: 20px;
+            border-left: 3px solid #ff7e30;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #e3f2fd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2980b9;
+            font-size: 18px;
+        }
+
+        .activity-details h4 {
+            color: #0a1a3a;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .activity-details p {
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .activity-expense {
+            font-weight: 700;
+            color: #0a1a3a;
+            font-size: 1rem;
+            background-color: #fff3e0;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #ffcc80;
+        }
+
+        .activity-category {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .category-transport {
+            background-color: #e1f5fe;
+            color: #0288d1;
+            border: 1px solid #b3e5fc;
+        }
+
+        .category-food {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ffcc80;
+        }
+
+        .category-accommodation {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .category-activity {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #e1bee7;
+        }
+
+        .category-other {
+            background-color: #f5f5f5;
+            color: #616161;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Budget Overview Section */
+        .budget-overview {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 2px solid #2980b9;
+        }
+
+        .budget-overview h3 {
+            color: #0a1a3a;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff7e30;
+        }
+
+        .budget-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s;
+            border-top: 4px solid #2980b9;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box h4 {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0a1a3a;
+        }
+
+        .stat-value.total {
+            color: #2ecc71;
+        }
+
+        .currency {
+            font-size: 1.1rem;
+            color: #ff7e30;
+            font-weight: 600;
+            margin-right: 3px;
+        }
+
+        .comparison-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #ff7e30;
+        }
+
+        .comparison-section h4 {
+            color: #0a1a3a;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .comparison-item {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .comparison-item h5 {
+            color: #555;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0a1a3a;
+        }
+
+        .comparison-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .status-under {
+            background-color: #d5edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-over {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-exact {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .budget-message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3e0;
+            border-radius: 10px;
+            border: 2px dashed #ff7e30;
+        }
+
+        .budget-message h4 {
+            color: #e65100;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .budget-message p {
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1100px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .content {
+                max-height: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .budget-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .budget-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and user profile -->
+        <header>
+            <div class="logo">Globe<span>Trotter</span></div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Traveler Profile</span>
+            </div>
+        </header>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search trips, activities, or expenses...">
+                <button><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar Filters -->
+            <div class="sidebar">
+                <div class="filter-section">
+                    <h3>Group by</h3>
+                    <button class="filter-btn active">
+                        <i class="fas fa-calendar-alt"></i> Day
+                    </button>
+                    <button class="filter-btn">
+                        <i class="fas fa-city"></i> City
+                    </button>
+                    <button class="filter-btn">
+                        <i class="fas fa-tags"></i> Category
+                    </button>
+                </div>
+                <div class="filter-section">
+                    <h3>Filter</h3>
+                    <button class="filter-btn active">
+                        <i class="fas fa-filter"></i> All Expenses
+                    </button>
+                    <button class="filter-btn">
+                        <i class="fas fa-plane"></i> Transport
+                    </button>
+                    <button class="filter-btn">
+                        <i class="fas fa-hotel"></i> Accommodation
+                    </button>
+                    <button class="filter-btn">
+                        <i class="fas fa-utensils"></i> Food & Dining
+                    </button>
+                    <button class="filter-btn">
+                        <i class="fas fa-ticket-alt"></i> Activities
+                    </button>
+                </div>
+                <div class="sort-section">
+                    <h3>Sort by</h3>
+                    <button class="sort-btn active">
+                        <i class="fas fa-sort-amount-down"></i> Highest Cost
+                    </button>
+                    <button class="sort-btn">
+                        <i class="fas fa-sort-amount-up"></i> Lowest Cost
+                    </button>
+                    <button class="sort-btn">
+                        <i class="fas fa-calendar"></i> Date
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="content">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-title">
+                        <h2><i class="fas fa-chart-pie"></i> Trip Budget & Cost Breakdown</h2>
+                        <p>European Adventure - 14 days across Paris, Rome, Barcelona, Amsterdam, Berlin</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn secondary-btn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="action-btn primary-btn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Day-wise Expenses -->
+                <div class="days-container">
+                    <div class="section-title">
+                        <i class="fas fa-calendar-day"></i> Day-wise Expenses
+                    </div>
+                    
+                    <!-- Day 1 -->
+                    <div class="day-card">
+                        <div class="day-header" onclick="toggleDay(1)">
+                            <h3><i class="fas fa-sun"></i> Day 1 - Paris Arrival</h3>
+                            <div class="day-total"><span class="currency">₹</span>85,000</div>
+                        </div>
+                        <div class="day-content" id="day1-content">
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-plane"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Flight to Paris</h4>
+                                        <p>Direct flight from Mumbai to Paris Charles de Gaulle</p>
+                                        <span class="activity-category category-transport">Transport</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>65,000</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-hotel"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Hotel Check-in</h4>
+                                        <p>Hotel Eiffel Tower View - 4 nights</p>
+                                        <span class="activity-category category-accommodation">Accommodation</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>12,000</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Welcome Dinner</h4>
+                                        <p>Traditional French cuisine at local bistro</p>
+                                        <span class="activity-category category-food">Food & Dining</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>3,500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-taxi"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Airport Transfer</h4>
+                                        <p>Taxi from airport to hotel</p>
+                                        <span class="activity-category category-transport">Transport</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>4,500</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Day 2 -->
+                    <div class="day-card">
+                        <div class="day-header" onclick="toggleDay(2)">
+                            <h3><i class="fas fa-sun"></i> Day 2 - Paris Exploration</h3>
+                            <div class="day-total"><span class="currency">₹</span>18,200</div>
+                        </div>
+                        <div class="day-content" id="day2-content">
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-landmark"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Eiffel Tower Visit</h4>
+                                        <p>Summit access with guided tour</p>
+                                        <span class="activity-category category-activity">Activity</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>4,200</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Breakfast & Lunch</h4>
+                                        <p>Café meals and street food</p>
+                                        <span class="activity-category category-food">Food & Dining</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>2,800</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Louvre Museum</h4>
+                                        <p>Skip-the-line tickets</p>
+                                        <span class="activity-category category-activity">Activity</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>2,500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-bus"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>City Transport</h4>
+                                        <p>Metro day pass</p>
+                                        <span class="activity-category category-transport">Transport</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>1,200</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-shopping-bag"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Souvenirs</h4>
+                                        <p>Local gifts and memorabilia</p>
+                                        <span class="activity-category category-other">Other</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>3,500</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Day 3 -->
+                    <div class="day-card">
+                        <div class="day-header" onclick="toggleDay(3)">
+                            <h3><i class="fas fa-sun"></i> Day 3 - Paris to Rome</h3>
+                            <div class="day-total"><span class="currency">₹</span>32,800</div>
+                        </div>
+                        <div class="day-content" id="day3-content">
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-train"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Train to Rome</h4>
+                                        <p>High-speed train Paris to Rome</p>
+                                        <span class="activity-category category-transport">Transport</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>18,500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-hotel"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Rome Hotel</h4>
+                                        <p>Hotel near Colosseum - 3 nights</p>
+                                        <span class="activity-category category-accommodation">Accommodation</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>10,500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Italian Dinner</h4>
+                                        <p>Authentic pasta and wine dinner</p>
+                                        <span class="activity-category category-food">Food & Dining</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>3,800</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Day 4 -->
+                    <div class="day-card">
+                        <div class="day-header" onclick="toggleDay(4)">
+                            <h3><i class="fas fa-sun"></i> Day 4 - Rome Exploration</h3>
+                            <div class="day-total"><span class="currency">₹</span>15,600</div>
+                        </div>
+                        <div class="day-content" id="day4-content">
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-landmark"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Colosseum Tour</h4>
+                                        <p>Guided tour with arena access</p>
+                                        <span class="activity-category category-activity">Activity</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>3,500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-church"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Vatican City</h4>
+                                        <p>Museums and Sistine Chapel</p>
+                                        <span class="activity-category category-activity">Activity</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>4,200</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Food & Gelato</h4>
+                                        <p>Local meals and desserts</p>
+                                        <span class="activity-category category-food">Food & Dining</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>3,900</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-bus"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Local Transport</h4>
+                                        <p>Bus and metro tickets</p>
+                                        <span class="activity-category category-transport">Transport</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>1,500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-info">
+                                    <div class="activity-icon">
+                                        <i class="fas fa-gift"></i>
+                                    </div>
+                                    <div class="activity-details">
+                                        <h4>Shopping</h4>
+                                        <p>Local crafts and clothing</p>
+                                        <span class="activity-category category-other">Other</span>
+                                    </div>
+                                </div>
+                                <div class="activity-expense"><span class="currency">₹</span>2,500</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single Budget Overview at the End -->
+                <div class="budget-overview">
+                    <h3><i class="fas fa-chart-line"></i> Budget Overview</h3>
+                    
+                    <div class="budget-stats">
+                        <div class="stat-box">
+                            <h4>Total Budget</h4>
+                            <div class="stat-value"><span class="currency">₹</span>3,75,000</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Estimated Expenses</h4>
+                            <div class="stat-value total"><span class="currency">₹</span>3,45,850</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Remaining Balance</h4>
+                            <div class="stat-value"><span class="currency">₹</span>29,150</div>
+                        </div>
+                        <div class="stat-box">
+                            <h4>Average Per Day</h4>
+                            <div class="stat-value"><span class="currency">₹</span>24,704</div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-section">
+                        <h4><i class="fas fa-balance-scale"></i> Budget vs Actual Comparison</h4>
+                        <div class="comparison-grid">
+                            <div class="comparison-item">
+                                <h5>Budget Status</h5>
+                                <div class="comparison-value">Under Budget</div>
+                                <div class="comparison-status status-under">7.8% Saved</div>
+                            </div>
+                            <div class="comparison-item">
+                                <h5>Daily Average vs Budget</h5>
+                                <div class="comparison-value"><span class="currency">₹</span>24,704</div>
+                                <div class="comparison-status status-under">Under by ₹1,946</div>
+                            </div>
+                            <div class="comparison-item">
+                                <h5>Amount Saved</h5>
+                                <div class="comparison-value"><span class="currency">₹</span>29,150</div>
+                                <div class="comparison-status status-under">Healthy</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="budget-message">
+                        <h4><i class="fas fa-check-circle"></i> Budget Status: Healthy</h4>
+                        <p>You are currently <strong>₹29,150 under budget</strong>. This represents <strong>7.8% savings</strong> on your planned expenses. Keep up the good planning!</p>
+                    </div>
+                </div>
+
+                <footer>
+                    <p>GlobeTrotter Budget & Cost Breakdown Screen • All amounts in Indian Rupees (₹) • Updated: June 15, 2023</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle day content visibility
+        function toggleDay(dayNumber) {
+            const dayContent = document.getElementById(`day${dayNumber}-content`);
+            dayContent.classList.toggle('expanded');
+            
+            // Update icon
+            const icon = dayContent.previousElementSibling.querySelector('i.fa-sun');
+            if (dayContent.classList.contains('expanded')) {
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                icon.className = 'fas fa-sun';
+            }
+        }
+        
+        // Expand first day by default
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleDay(1);
+            
+            // Simple interactivity for filter buttons
+            document.querySelectorAll('.filter-btn, .sort-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons in the same group
+                    const parentGroup = this.closest('.filter-section, .sort-section');
+                    parentGroup.querySelectorAll('.filter-btn, .sort-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                });
+            });
+            
+            // User profile click
+            document.querySelector('.user-profile').addEventListener('click', function() {
+                alert('Opening user profile settings');
+            });
+        });
+    </script>
+</body>
+</html>
