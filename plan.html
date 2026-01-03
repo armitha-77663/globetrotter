@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter - Plan New Trip</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse all existing dashboard styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* Plan Trip Specific Styles */
+        .plan-trip-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .page-title {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section-title {
+            font-size: 1.4rem;
+            color: #2980b9;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-section-title i {
+            color: #ff7e30;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #f9fbfd;
+        }
+
+        .form-input:focus {
+            border-color: #2980b9;
+            background-color: white;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f9fbfd;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            border-color: #2980b9;
+            outline: none;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .input-with-icon .form-input {
+            padding-left: 45px;
+        }
+
+        .date-range {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .date-range .form-group {
+            flex: 1;
+        }
+
+        .budget-input {
+            position: relative;
+        }
+
+        .budget-input:before {
+            content: "₹";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: #2980b9;
+        }
+
+        .budget-input .form-input {
+            padding-left: 35px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1f6391;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(41, 128, 185, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #2980b9;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            max-width: 400px;
+        }
+
+        .notification.success {
+            background-color: #27ae60;
+        }
+
+        .notification.error {
+            background-color: #e74c3c;
+        }
+
+        .destination-suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f0f7ff;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Success Modal */
+        .success-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .success-modal.show {
+            display: flex;
+        }
+
+        .success-content {
+            background: white;
+            border-radius: 10px;
+            padding: 40px 30px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            animation: popIn 0.3s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .success-content h3 {
+            margin-bottom: 15px;
+            color: #27ae60;
+            font-size: 1.8rem;
+        }
+
+        .success-content p {
+            margin-bottom: 25px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .success-content .btn {
+            padding: 12px 30px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .success-content .btn:hover {
+            background-color: #1f6391;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .date-range {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .plan-trip-container {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>Trip Created Successfully!</h3>
+            <p>Your new trip "<span id="createdTripName"></span>" has been added to your upcoming trips. You can view and manage it from your dashboard.</p>
+            <button class="btn" id="goToDashboardBtn">
+                <i class="fas fa-home"></i> Go to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span id="userName">Traveler</span>
+            </div>
+        </header>
+        
+        <!-- Page Header -->
+        <h1 class="page-title">Plan Your Adventure</h1>
+        <p class="page-subtitle">Fill in the details below to create your perfect trip itinerary</p>
+        
+        <!-- Trip Planning Form -->
+        <div class="plan-trip-container">
+            <form id="tripPlanForm">
+                <div class="form-grid">
+                    <!-- Trip Basic Info -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-info-circle"></i> Trip Information</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="tripName">Trip Name *</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-flag"></i>
+                                <input type="text" id="tripName" class="form-input" placeholder="e.g., Summer Vacation 2024" required>
+                            </div>
+                            <small style="color: #666; font-size: 0.85rem;">Give your trip a memorable name</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="destination">Destination *</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" id="destination" class="form-input" placeholder="e.g., Tokyo, Japan" required>
+                            </div>
+                            <div class="destination-suggestions" id="destinationSuggestions"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Travel Dates *</label>
+                            <div class="date-range">
+                                <div class="form-group">
+                                    <label class="form-label" for="startDate">Start Date</label>
+                                    <input type="date" id="startDate" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="endDate">End Date</label>
+                                    <input type="date" id="endDate" class="form-input" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Budget & Preferences -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-wallet"></i> Budget & Preferences</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="tripBudget">Total Budget (₹) *</label>
+                            <div class="budget-input">
+                                <input type="number" id="tripBudget" class="form-input" placeholder="50000" min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="travelStyle">Travel Style</label>
+                            <select id="travelStyle" class="form-select">
+                                <option value="">Select travel style</option>
+                                <option value="budget">Budget Traveler</option>
+                                <option value="luxury">Luxury Traveler</option>
+                                <option value="backpacker">Backpacker</option>
+                                <option value="family">Family Vacation</option>
+                                <option value="business">Business Trip</option>
+                                <option value="adventure">Adventure Seeker</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Interests (Select all that apply)</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="interestCulture" name="interests" value="culture">
+                                <label for="interestCulture">Culture & History</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="interestNature" name="interests" value="nature">
+                                <label for="interestNature">Nature & Wildlife</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="interestFood" name="interests" value="food">
+                                <label for="interestFood">Food & Dining</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="interestAdventure" name="interests" value="adventure">
+                                <label for="interestAdventure">Adventure Sports</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="interestShopping" name="interests" value="shopping">
+                                <label for="interestShopping">Shopping</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="interestRelax" name="interests" value="relax">
+                                <label for="interestRelax">Relaxation & Spa</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Accommodation & Transport -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-hotel"></i> Accommodation & Transport</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="accommodationType">Accommodation Type</label>
+                            <select id="accommodationType" class="form-select">
+                                <option value="">Select accommodation type</option>
+                                <option value="hotel">Hotel</option>
+                                <option value="hostel">Hostel</option>
+                                <option value="apartment">Vacation Rental/Apartment</option>
+                                <option value="resort">Resort</option>
+                                <option value="homestay">Homestay</option>
+                                <option value="camping">Camping</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="transportType">Primary Transport</label>
+                            <select id="transportType" class="form-select">
+                                <option value="">Select transport type</option>
+                                <option value="flight">Flight</option>
+                                <option value="train">Train</option>
+                                <option value="bus">Bus</option>
+                                <option value="car">Car Rental</option>
+                                <option value="cruise">Cruise</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="travelersCount">Number of Travelers</label>
+                            <input type="number" id="travelersCount" class="form-input" placeholder="1" min="1" max="20">
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Details -->
+                    <div class="form-section">
+                        <h3 class="form-section-title"><i class="fas fa-sticky-note"></i> Additional Details</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="tripDescription">Trip Description</label>
+                            <textarea id="tripDescription" class="form-input form-textarea" placeholder="Describe your trip plans, what you hope to see and do..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="specialRequirements">Special Requirements</label>
+                            <textarea id="specialRequirements" class="form-input form-textarea" placeholder="Any dietary restrictions, accessibility needs, or other special requirements..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="emergencyContact">Emergency Contact</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" id="emergencyContact" class="form-input" placeholder="Contact Name">
+                                </div>
+                                <div class="form-group">
+                                    <input type="tel" id="emergencyPhone" class="form-input" placeholder="Phone Number">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="saveDraftBtn">
+                        <i class="fas fa-save"></i> Save as Draft
+                    </button>
+                    <button type="submit" class="btn btn-success" id="createTripBtn">
+                        <i class="fas fa-check-circle"></i> Create Trip
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification element -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Check if user is logged in
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            
+            if (isLoggedIn !== 'true') {
+                alert('Please login first to plan a trip.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            loadUserData();
+            setupFormListeners();
+            setupDestinationSuggestions();
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').min = today;
+            document.getElementById('endDate').min = today;
+        });
+
+        // DOM Elements
+        const tripPlanForm = document.getElementById('tripPlanForm');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveDraftBtn = document.getElementById('saveDraftBtn');
+        const createTripBtn = document.getElementById('createTripBtn');
+        const notification = document.getElementById('notification');
+        const destinationInput = document.getElementById('destination');
+        const destinationSuggestions = document.getElementById('destinationSuggestions');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const userNameElement = document.getElementById('userName');
+        const successModal = document.getElementById('successModal');
+        const createdTripNameSpan = document.getElementById('createdTripName');
+        const goToDashboardBtn = document.getElementById('goToDashboardBtn');
+
+        // Destination suggestions data
+        const destinationData = [
+            "Tokyo, Japan",
+            "Paris, France",
+            "New York, USA",
+            "London, UK",
+            "Bali, Indonesia",
+            "Sydney, Australia",
+            "Dubai, UAE",
+            "Rome, Italy",
+            "Bangkok, Thailand",
+            "Singapore",
+            "Barcelona, Spain",
+            "Amsterdam, Netherlands",
+            "Istanbul, Turkey",
+            "Hong Kong",
+            "Vancouver, Canada",
+            "Cape Town, South Africa",
+            "Rio de Janeiro, Brazil",
+            "Mumbai, India",
+            "Seoul, South Korea",
+            "Berlin, Germany"
+        ];
+
+        function loadUserData() {
+            const username = localStorage.getItem('username') || 'Traveler';
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            
+            if (userData.firstName) {
+                userNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
+            } else {
+                userNameElement.textContent = username;
+            }
+        }
+
+        function setupFormListeners() {
+            // Cancel button - REDIRECT TO LANDING.HTML
+            cancelBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                    window.location.href = 'landing.html';
+                }
+            });
+            
+            // Save draft button
+            saveDraftBtn.addEventListener('click', function() {
+                if (validateForm()) {
+                    const formData = collectFormData();
+                    formData.status = 'draft';
+                    
+                    // Save to localStorage
+                    saveTripToStorage(formData, true);
+                    showNotification('Trip saved as draft successfully!', 'success');
+                    
+                    // Set flag and redirect to dashboard
+                    setTimeout(() => {
+                        localStorage.setItem('newTripCreated', 'true');
+                        window.location.href = 'landing.html';
+                    }, 1500);
+                }
+            });
+            
+            // Form submission
+            tripPlanForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    const formData = collectFormData();
+                    formData.status = 'upcoming';
+                    
+                    // Save to localStorage
+                    const savedTrip = saveTripToStorage(formData, false);
+                    
+                    // Show success modal with trip name
+                    createdTripNameSpan.textContent = savedTrip.name;
+                    successModal.classList.add('show');
+                }
+            });
+            
+            // Go to dashboard button
+            goToDashboardBtn.addEventListener('click', function() {
+                // Set flag to show alert on dashboard
+                localStorage.setItem('newTripCreated', 'true');
+                window.location.href = 'landing.html';
+            });
+            
+            // Date validation
+            startDateInput.addEventListener('change', function() {
+                endDateInput.min = this.value;
+                
+                // If end date is before start date, reset it
+                if (endDateInput.value && endDateInput.value < this.value) {
+                    endDateInput.value = this.value;
+                }
+            });
+        }
+
+        function setupDestinationSuggestions() {
+            destinationInput.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length < 2) {
+                    destinationSuggestions.style.display = 'none';
+                    return;
+                }
+                
+                const filtered = destinationData.filter(dest => 
+                    dest.toLowerCase().includes(value)
+                );
+                
+                if (filtered.length > 0) {
+                    destinationSuggestions.innerHTML = filtered.map(dest => 
+                        `<div class="suggestion-item" data-value="${dest}">${dest}</div>`
+                    ).join('');
+                    destinationSuggestions.style.display = 'block';
+                } else {
+                    destinationSuggestions.style.display = 'none';
+                }
+            });
+            
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!destinationInput.contains(e.target) && !destinationSuggestions.contains(e.target)) {
+                    destinationSuggestions.style.display = 'none';
+                }
+            });
+            
+            // Select suggestion
+            destinationSuggestions.addEventListener('click', function(e) {
+                if (e.target.classList.contains('suggestion-item')) {
+                    destinationInput.value = e.target.getAttribute('data-value');
+                    destinationSuggestions.style.display = 'none';
+                }
+            });
+        }
+
+        function validateForm() {
+            const tripName = document.getElementById('tripName').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const budget = document.getElementById('tripBudget').value;
+            
+            if (!tripName) {
+                showNotification('Please enter a trip name', 'error');
+                return false;
+            }
+            
+            if (!destination) {
+                showNotification('Please enter a destination', 'error');
+                return false;
+            }
+            
+            if (!startDate || !endDate) {
+                showNotification('Please select both start and end dates', 'error');
+                return false;
+            }
+            
+            if (new Date(endDate) < new Date(startDate)) {
+                showNotification('End date cannot be before start date', 'error');
+                return false;
+            }
+            
+            if (!budget || budget <= 0) {
+                showNotification('Please enter a valid budget', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function collectFormData() {
+            // Get all checked interests
+            const interests = [];
+            document.querySelectorAll('input[name="interests"]:checked').forEach(checkbox => {
+                interests.push(checkbox.value);
+            });
+            
+            return {
+                id: Date.now(), // Use timestamp as unique ID
+                name: document.getElementById('tripName').value,
+                destination: document.getElementById('destination').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                budget: parseInt(document.getElementById('tripBudget').value),
+                travelStyle: document.getElementById('travelStyle').value,
+                interests: interests,
+                accommodationType: document.getElementById('accommodationType').value,
+                transportType: document.getElementById('transportType').value,
+                travelersCount: parseInt(document.getElementById('travelersCount').value) || 1,
+                description: document.getElementById('tripDescription').value,
+                specialRequirements: document.getElementById('specialRequirements').value,
+                emergencyContact: document.getElementById('emergencyContact').value,
+                emergencyPhone: document.getElementById('emergencyPhone').value,
+                createdDate: new Date().toISOString().split('T')[0]
+            };
+        }
+
+        function saveTripToStorage(tripData, isDraft) {
+            // Get existing trips from localStorage
+            let trips = JSON.parse(localStorage.getItem('userTrips') || '[]');
+            
+            // Add new trip
+            trips.push(tripData);
+            
+            // Save back to localStorage
+            localStorage.setItem('userTrips', JSON.stringify(trips));
+            
+            // Save to drafts if applicable
+            if (isDraft) {
+                let drafts = JSON.parse(localStorage.getItem('tripDrafts') || '[]');
+                drafts.push(tripData);
+                localStorage.setItem('tripDrafts', JSON.stringify(drafts));
+            }
+            
+            // Update trip count
+            const tripCount = trips.length;
+            localStorage.setItem('userTripCount', tripCount);
+            
+            return tripData;
+        }
+
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type === 'success') {
+                notification.classList.add('success');
+            } else if (type === 'error') {
+                notification.classList.add('error');
+            }
+            
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Auto-save draft every 30 seconds
+        setInterval(() => {
+            if (document.getElementById('tripName').value.trim()) {
+                const formData = collectFormData();
+                formData.status = 'draft';
+                formData.autoSaved = true;
+                
+                // Save auto-draft
+                let autoDrafts = JSON.parse(localStorage.getItem('autoDrafts') || '[]');
+                autoDrafts.push(formData);
+                localStorage.setItem('autoDrafts', JSON.stringify(autoDrafts));
+                
+                console.log('Auto-saved draft');
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
