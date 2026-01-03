@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Welcome Message */
+        .welcome-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-message {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            margin-bottom: 5px;
+        }
+
+        .welcome-subtext {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        /* Search and Filter Section */
+        .search-filter-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f5f7fa;
+        }
+
+        .search-btn {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #1f6391;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: #2980b9;
+        }
+
+        .filter-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Main Content Layout */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-all {
+            font-size: 0.9rem;
+            color: #ff7e30;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .view-all:hover {
+            color: #ff9a5c;
+            text-decoration: underline;
+        }
+
+        /* Recent Trips Section */
+        .trips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trip-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .trip-header {
+            background-color: #2980b9;
+            color: white;
+            padding: 15px;
+        }
+
+        .trip-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .trip-dates {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .trip-details {
+            padding: 15px;
+        }
+
+        .trip-destination {
+            font-weight: 600;
+            color: #0a1a3a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trip-destination i {
+            color: #ff7e30;
+        }
+
+        .trip-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-upcoming {
+            background-color: rgba(41, 128, 185, 0.1);
+            color: #2980b9;
+        }
+
+        .status-completed {
+            background-color: rgba(255, 126, 48, 0.1);
+            color: #ff7e30;
+        }
+
+        .trip-budget {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .trip-budget i {
+            color: #2980b9;
+        }
+
+        /* Budget Highlights */
+        .budget-highlights {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .budget-item:last-child {
+            border-bottom: none;
+        }
+
+        .budget-label {
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .budget-label i {
+            color: #2980b9;
+        }
+
+        .budget-amount {
+            font-weight: 600;
+            color: #2980b9;
+        }
+
+        /* Recommended Destinations */
+        .destinations-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .destination-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .destination-name {
+            font-weight: 600;
+            color: #2980b9;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .destination-name i {
+            color: #ff7e30;
+        }
+
+        .destination-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Plan New Trip Button */
+        .plan-trip-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .plan-trip-btn {
+            background-color: #ff7e30;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(255, 126, 48, 0.2);
+        }
+
+        .plan-trip-btn:hover {
+            background-color: #ff9a5c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 126, 48, 0.25);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #2980b9;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #2980b9;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .trips-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .trips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .destinations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                justify-content: center;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with Logo and User Info -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Sugavaneshwaran</span>
+            </div>
+        </header>
+        
+        <!-- Welcome Message -->
+        <section class="welcome-section">
+            <h1 class="welcome-message">Welcome back, Sugavaneshwaran!</h1>
+            <p class="welcome-subtext">Ready to plan your next adventure? Here's a summary of your recent trips and recommendations.</p>
+        </section>
+        
+        <!-- Search and Filter Section -->
+        <section class="search-filter-section">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search for destinations, trips, or activities...">
+                <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="filter-options">
+                <button class="filter-btn active" data-filter="all"><i class="fas fa-layer-group"></i> All Trips</button>
+                <button class="filter-btn" data-filter="upcoming"><i class="fas fa-plane"></i> Upcoming</button>
+                <button class="filter-btn" data-filter="completed"><i class="fas fa-check-circle"></i> Completed</button>
+            </div>
+        </section>
+        
+        <!-- Main Content Area -->
+        <div class="content-wrapper">
+            <!-- Left Column: Recent Trips and Plan New Trip -->
+            <div class="left-column">
+                <!-- Recent Trips Section -->
+                <div class="section-title">
+                    Previous Trips
+                    <a href="#" class="view-all" id="viewAllTrips">View All</a>
+                </div>
+                
+                <div class="trips-grid" id="tripsContainer">
+                    <!-- Trip cards will be loaded here dynamically -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading trips...
+                    </div>
+                </div>
+                
+                <!-- Plan New Trip Button -->
+                <div class="plan-trip-section">
+                    <button class="plan-trip-btn" id="planTripBtn">
+                        <i class="fas fa-plus-circle"></i> Plan a trip
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Column: Budget Highlights and Recommended Destinations -->
+            <div class="right-column">
+                <!-- Budget Highlights -->
+                <div class="section-title">Budget Highlights</div>
+                <div class="budget-highlights" id="budgetHighlights">
+                    <!-- Budget items will be loaded here dynamically -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading budget data...
+                    </div>
+                </div>
+                
+                <!-- Recommended Destinations -->
+                <div class="section-title">Top Regional Selections</div>
+                <div class="destinations-grid" id="destinationsContainer">
+                    <!-- Destination cards will be loaded here dynamically -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading recommendations...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification element -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Mock data for demonstration (converted to Indian Rupees)
+        // Using conversion rate: 1 USD = 83 INR (approximate)
+        const mockTrips = [
+            {
+                id: 1,
+                name: "Silky Woodpecker",
+                startDate: "2023-05-15",
+                endDate: "2023-05-22",
+                destination: "Tokyo, Japan",
+                status: "completed",
+                budget: 2800 * 83, // Converted to INR: ₹2,32,400
+                description: "Cultural exploration of Tokyo with visits to temples and modern districts"
+            },
+            {
+                id: 2,
+                name: "Great Owl",
+                startDate: "2023-08-10",
+                endDate: "2023-08-18",
+                destination: "Paris, France",
+                status: "completed",
+                budget: 3200 * 83, // Converted to INR: ₹2,65,600
+                description: "Romantic getaway to the city of lights"
+            },
+            {
+                id: 3,
+                name: "Remarkable Amsterdam",
+                startDate: "2023-10-05",
+                endDate: "2023-10-12",
+                destination: "Amsterdam, Netherlands",
+                status: "completed",
+                budget: 2500 * 83, // Converted to INR: ₹2,07,500
+                description: "Canal tours and museum visits in the Dutch capital"
+            },
+            {
+                id: 4,
+                name: "Authorized Squirrel",
+                startDate: "2023-12-20",
+                endDate: "2023-12-30",
+                destination: "New York, USA",
+                status: "upcoming",
+                budget: 4500 * 83, // Converted to INR: ₹3,73,500
+                description: "New Year celebration in the Big Apple"
+            }
+        ];
+
+        const mockDestinations = [
+            {
+                id: 1,
+                name: "Squiggly Penguin",
+                region: "Antarctica",
+                description: "Antarctica expedition with penguin watching and glacier tours",
+                priceRange: "₹₹₹₹"
+            },
+            {
+                id: 2,
+                name: "Bali, Indonesia",
+                region: "Southeast Asia",
+                description: "Tropical beaches, temples, and vibrant culture",
+                priceRange: "₹₹"
+            },
+            {
+                id: 3,
+                name: "Swiss Alps",
+                region: "Europe",
+                description: "Mountain adventures and scenic train rides",
+                priceRange: "₹₹₹"
+            },
+            {
+                id: 4,
+                name: "Cape Town, South Africa",
+                region: "Africa",
+                description: "Table Mountain, wildlife, and coastal drives",
+                priceRange: "₹₹"
+            }
+        ];
+
+        // DOM Elements
+        const tripsContainer = document.getElementById('tripsContainer');
+        const destinationsContainer = document.getElementById('destinationsContainer');
+        const budgetHighlights = document.getElementById('budgetHighlights');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const planTripBtn = document.getElementById('planTripBtn');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const notification = document.getElementById('notification');
+        const viewAllTrips = document.getElementById('viewAllTrips');
+
+        // Format Indian Rupees with proper comma separation
+        function formatIndianRupees(amount) {
+            // Convert to string and split into parts
+            let amountStr = Math.round(amount).toString();
+            let lastThree = amountStr.substring(amountStr.length - 3);
+            let otherNumbers = amountStr.substring(0, amountStr.length - 3);
+            
+            if (otherNumbers !== '') {
+                lastThree = ',' + lastThree;
+            }
+            
+            let result = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+            return '₹' + result;
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial data
+            loadTrips('all');
+            loadDestinations();
+            loadBudgetHighlights();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Plan New Trip button
+            planTripBtn.addEventListener('click', function() {
+                showNotification('Opening trip planner...');
+                setTimeout(() => {
+                    showNotification('Trip planner ready! Start planning your adventure.');
+                }, 500);
+            });
+            
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Filter trips
+                    const filter = this.getAttribute('data-filter');
+                    loadTrips(filter);
+                });
+            });
+            
+            // Search functionality
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // View all trips link
+            viewAllTrips.addEventListener('click', function(e) {
+                e.preventDefault();
+                showNotification('Loading all trips...');
+                loadTrips('all');
+            });
+            
+            // User profile click
+            document.querySelector('.user-profile').addEventListener('click', function() {
+                showNotification('Opening user profile settings');
+            });
+        }
+
+        function loadTrips(filter) {
+            // Show loading state
+            tripsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading trips...</div>';
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                let filteredTrips = mockTrips;
+                
+                if (filter !== 'all') {
+                    filteredTrips = mockTrips.filter(trip => trip.status === filter);
+                }
+                
+                // Render trips
+                renderTrips(filteredTrips);
+            }, 300);
+        }
+
+        function renderTrips(trips) {
+            if (trips.length === 0) {
+                tripsContainer.innerHTML = '<div style="text-align: center; padding: 30px; background-color: rgba(255,255,255,0.9); border-radius: 10px; color: #666;">No trips found. Start planning your first adventure!</div>';
+                return;
+            }
+            
+            let tripsHTML = '';
+            
+            trips.forEach(trip => {
+                const startDate = new Date(trip.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const endDate = new Date(trip.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                
+                tripsHTML += `
+                    <div class="trip-card" data-id="${trip.id}">
+                        <div class="trip-header">
+                            <div class="trip-title">${trip.name}</div>
+                            <div class="trip-dates">${startDate} - ${endDate}</div>
+                        </div>
+                        <div class="trip-details">
+                            <div class="trip-destination"><i class="fas fa-map-marker-alt"></i> ${trip.destination}</div>
+                            <div class="trip-status status-${trip.status}">${trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}</div>
+                            <div class="trip-budget"><i class="fas fa-wallet"></i> Budget: ${formatIndianRupees(trip.budget)}</div>
+                            <p style="margin-top: 10px; font-size: 0.9rem; color: #777;">${trip.description}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            tripsContainer.innerHTML = tripsHTML;
+            
+            // Add click event to trip cards
+            document.querySelectorAll('.trip-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const tripId = this.getAttribute('data-id');
+                    const trip = mockTrips.find(t => t.id == tripId);
+                    showNotification(`Opening details for: ${trip.name}`);
+                });
+            });
+        }
+
+        function loadDestinations() {
+            // Show loading state
+            destinationsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading recommendations...</div>';
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                renderDestinations(mockDestinations);
+            }, 400);
+        }
+
+        function renderDestinations(destinations) {
+            let destinationsHTML = '';
+            
+            destinations.forEach(destination => {
+                destinationsHTML += `
+                    <div class="destination-card" data-id="${destination.id}">
+                        <div class="destination-name"><i class="fas fa-globe-americas"></i> ${destination.name}</div>
+                        <div class="destination-desc">${destination.description}</div>
+                        <div style="margin-top: 8px; font-size: 0.8rem; color: #ff7e30; font-weight: 500;">
+                            ${destination.region} • ${destination.priceRange}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            destinationsContainer.innerHTML = destinationsHTML;
+            
+            // Add click event to destination cards
+            document.querySelectorAll('.destination-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const destinationId = this.getAttribute('data-id');
+                    const destination = mockDestinations.find(d => d.id == destinationId);
+                    showNotification(`Exploring ${destination.name}...`);
+                });
+            });
+        }
+
+        function loadBudgetHighlights() {
+            // Calculate budget data from trips
+            const completedTrips = mockTrips.filter(trip => trip.status === 'completed');
+            const upcomingTrips = mockTrips.filter(trip => trip.status === 'upcoming');
+            
+            const totalSpent = completedTrips.reduce((sum, trip) => sum + trip.budget, 0);
+            const upcomingCost = upcomingTrips.reduce((sum, trip) => sum + trip.budget, 0);
+            const averagePerTrip = completedTrips.length > 0 ? totalSpent / completedTrips.length : 0;
+            const remainingBudget = (15000 * 83) - totalSpent; // ₹12,45,000 total budget
+            
+            // Render budget highlights
+            const budgetHTML = `
+                <div class="budget-item">
+                    <span class="budget-label"><i class="fas fa-money-bill-wave"></i> Total Spent (2023)</span>
+                    <span class="budget-amount">${formatIndianRupees(totalSpent)}</span>
+                </div>
+                <div class="budget-item">
+                    <span class="budget-label"><i class="fas fa-plane"></i> Upcoming Trip Cost</span>
+                    <span class="budget-amount">${formatIndianRupees(upcomingCost)}</span>
+                </div>
+                <div class="budget-item">
+                    <span class="budget-label"><i class="fas fa-chart-line"></i> Average per Trip</span>
+                    <span class="budget-amount">${formatIndianRupees(averagePerTrip)}</span>
+                </div>
+                <div class="budget-item">
+                    <span class="budget-label"><i class="fas fa-piggy-bank"></i> Remaining Budget</span>
+                    <span class="budget-amount">${formatIndianRupees(remainingBudget)}</span>
+                </div>
+            `;
+            
+            budgetHighlights.innerHTML = budgetHTML;
+        }
+
+        function performSearch() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                loadTrips('all');
+                return;
+            }
+            
+            showNotification(`Searching for "${searchTerm}"...`);
+            
+            // Filter trips based on search term
+            const filteredTrips = mockTrips.filter(trip => 
+                trip.name.toLowerCase().includes(searchTerm) || 
+                trip.destination.toLowerCase().includes(searchTerm) ||
+                trip.description.toLowerCase().includes(searchTerm)
+            );
+            
+            renderTrips(filteredTrips);
+        }
+
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
