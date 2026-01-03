@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter | Activity Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Search header - FIXED ALIGNMENT */
+        .search-header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-title-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activity-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            line-height: 1.2;
+        }
+
+        .activity-title span {
+            color: #ff7e30;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            color: #2980b9;
+            font-weight: 600;
+        }
+
+        /* Controls section - FIXED ALIGNMENT */
+        .controls-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .controls-group {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .controls-group h3 {
+            font-size: 1.1rem;
+            color: #0a1a3a;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls-group h3 i {
+            color: #ff7e30;
+        }
+
+        .controls-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .control-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .control-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Options container - FIXED ALIGNMENT */
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .option-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #2980b9;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .option-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-header {
+            padding: 25px 25px 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-shrink: 0;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            line-height: 1.3;
+            margin-bottom: 5px;
+        }
+
+        .option-provider {
+            font-size: 1rem;
+            color: #ff7e30;
+            font-weight: 600;
+        }
+
+        .option-rating {
+            background-color: #f39c12;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+
+        .option-content {
+            padding: 0 25px 25px 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option-details {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .option-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .feature {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #0a1a3a;
+        }
+
+        .feature i {
+            color: #2980b9;
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
+
+        .option-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .option-price {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2ecc71;
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+
+        .option-price span {
+            font-size: 0.9rem;
+            color: #777;
+            font-weight: 400;
+        }
+
+        .book-btn {
+            background-color: #2980b9;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .book-btn:hover {
+            background-color: #1f6391;
+            transform: translateY(-2px);
+        }
+
+        .change-search-btn {
+            background-color: #ff7e30;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .change-search-btn:hover {
+            background-color: #e66b1f;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        footer a {
+            color: #ff7e30;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1100px) {
+            .options-container {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .controls-group {
+                min-width: 100%;
+            }
+            
+            .search-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .change-search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .option-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .option-rating {
+                margin-left: 0;
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .activity-title {
+                font-size: 1.8rem;
+            }
+            
+            .option-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .book-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and user profile -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <div class="user-profile" id="userProfile">
+                <i class="fas fa-user-circle"></i>
+                <span>Traveler Profile</span>
+            </div>
+        </header>
+
+        <!-- Search header -->
+        <div class="search-header">
+            <div class="search-title-container">
+                <h1 class="activity-title">Paragliding <span>Results</span></h1>
+                <p class="results-count">8 paragliding activities found</p>
+            </div>
+            <button class="change-search-btn" id="changeSearchBtn">
+                <i class="fas fa-search"></i> Change Search
+            </button>
+        </div>
+
+        <!-- Controls section -->
+        <div class="controls-container">
+            <div class="controls-group">
+                <h3><i class="fas fa-layer-group"></i> Group by</h3>
+                <div class="controls-buttons">
+                    <button class="control-btn group-btn active">Location</button>
+                    <button class="control-btn group-btn">Price</button>
+                    <button class="control-btn group-btn">Rating</button>
+                    <button class="control-btn group-btn">Provider</button>
+                </div>
+            </div>
+            
+            <div class="controls-group">
+                <h3><i class="fas fa-filter"></i> Filter</h3>
+                <div class="controls-buttons">
+                    <button class="control-btn filter-btn active">All</button>
+                    <button class="control-btn filter-btn">Beginner</button>
+                    <button class="control-btn filter-btn">Advanced</button>
+                    <button class="control-btn filter-btn">Tandem</button>
+                    <button class="control-btn filter-btn">Solo</button>
+                </div>
+            </div>
+            
+            <div class="controls-group">
+                <h3><i class="fas fa-sort-amount-down"></i> Sort by...</h3>
+                <div class="controls-buttons">
+                    <button class="control-btn sort-btn active">Popularity</button>
+                    <button class="control-btn sort-btn">Price: Low to High</button>
+                    <button class="control-btn sort-btn">Price: High to Low</button>
+                    <button class="control-btn sort-btn">Rating</button>
+                    <button class="control-btn sort-btn">Distance</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Options container -->
+        <div class="options-container">
+            <!-- Option 1: Swift Rabbit -->
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-info">
+                        <div class="option-name">Swift Rabbit</div>
+                        <div class="option-provider">By Kirankumar</div>
+                    </div>
+                    <div class="option-rating">
+                        <i class="fas fa-star"></i> 4.8
+                    </div>
+                </div>
+                <div class="option-content">
+                    <p class="option-details">
+                        Experience the thrill of paragliding with Swift Rabbit. Our certified instructors provide safe tandem flights with breathtaking mountain views. Perfect for beginners and experienced flyers alike.
+                    </p>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i> 2-3 hours
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-user-friends"></i> Tandem
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-camera"></i> Photos
+                        </div>
+                    </div>
+                    <div class="option-footer">
+                        <div class="option-price">$89<span>/person</span></div>
+                        <button class="book-btn option-book-btn" data-option="Swift Rabbit">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option 2 -->
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-info">
+                        <div class="option-name">Sky Eagle Adventure</div>
+                        <div class="option-provider">By KAARUNYA M</div>
+                    </div>
+                    <div class="option-rating">
+                        <i class="fas fa-star"></i> 4.9
+                    </div>
+                </div>
+                <div class="option-content">
+                    <p class="option-details">
+                        Soar like an eagle with our premium paragliding experience. We offer sunrise and sunset flights with the best equipment in the industry. Includes training session and safety briefing.
+                    </p>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i> 3-4 hours
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-video"></i> Video
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-certificate"></i> Certified
+                        </div>
+                    </div>
+                    <div class="option-footer">
+                        <div class="option-price">$129<span>/person</span></div>
+                        <button class="book-btn option-book-btn" data-option="Sky Eagle Adventure">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option 3: e Horse -->
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-info">
+                        <div class="option-name">Mountain Horse Glide</div>
+                        <div class="option-provider">By e Horse</div>
+                    </div>
+                    <div class="option-rating">
+                        <i class="fas fa-star"></i> 4.7
+                    </div>
+                </div>
+                <div class="option-content">
+                    <p class="option-details">
+                        Named after the majestic mountain horses, this paragliding experience offers the longest flight duration in the region. Experience thermal lifts and extended air time with expert guidance.
+                    </p>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i> 4-5 hours
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i> Insurance
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-mountain"></i> Mountain views
+                        </div>
+                    </div>
+                    <div class="option-footer">
+                        <div class="option-price">$149<span>/person</span></div>
+                        <button class="book-btn option-book-btn" data-option="Mountain Horse Glide">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option 4 -->
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-info">
+                        <div class="option-name">Cloud Surfer Pro</div>
+                        <div class="option-provider">By Kirankumar</div>
+                    </div>
+                    <div class="option-rating">
+                        <i class="fas fa-star"></i> 4.6
+                    </div>
+                </div>
+                <div class="option-content">
+                    <p class="option-details">
+                        For the adventurous souls seeking adrenaline rush. Advanced acrobatic flights available for experienced paragliders. Also offers beginner courses with certification upon completion.
+                    </p>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-clock"></i> Flexible
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-graduation-cap"></i> Courses
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-wind"></i> Acrobatic
+                        </div>
+                    </div>
+                    <div class="option-footer">
+                        <div class="option-price">$99<span>/person</span></div>
+                        <button class="book-btn option-book-btn" data-option="Cloud Surfer Pro">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option 5 -->
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-info">
+                        <div class="option-name">Sunset Glider</div>
+                        <div class="option-provider">By KAARUNYA M</div>
+                    </div>
+                    <div class="option-rating">
+                        <i class="fas fa-star"></i> 4.9
+                    </div>
+                </div>
+                <div class="option-content">
+                    <p class="option-details">
+                        Specialized sunset paragliding flights that offer breathtaking views as the sun dips below the horizon. Romantic packages available for couples. Includes champagne celebration after flight.
+                    </p>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-sun"></i> Sunset
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-heart"></i> Romantic
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-glass-cheers"></i> Celebration
+                        </div>
+                    </div>
+                    <div class="option-footer">
+                        <div class="option-price">$159<span>/person</span></div>
+                        <button class="book-btn option-book-btn" data-option="Sunset Glider">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Option 6 -->
+            <div class="option-card">
+                <div class="option-header">
+                    <div class="option-info">
+                        <div class="option-name">Valley Soarer</div>
+                        <div class="option-provider">By Kirankumar</div>
+                    </div>
+                    <div class="option-rating">
+                        <i class="fas fa-star"></i> 4.5
+                    </div>
+                </div>
+                <div class="option-content">
+                    <p class="option-details">
+                        Perfect for families and groups. Offers valley-crossing flights with panoramic views. Group discounts available. Safety-focused approach with equipment from leading manufacturers.
+                    </p>
+                    <div class="option-features">
+                        <div class="feature">
+                            <i class="fas fa-users"></i> Group discounts
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-child"></i> Family friendly
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-eye"></i> Panoramic
+                        </div>
+                    </div>
+                    <div class="option-footer">
+                        <div class="option-price">$79<span>/person</span></div>
+                        <button class="book-btn option-book-btn" data-option="Valley Soarer">
+                            <i class="fas fa-calendar-check"></i> Book Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>GlobalTrotter &copy; 2023 | Your Journey, Our Passion | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // User profile click
+            const userProfile = document.getElementById('userProfile');
+            userProfile.addEventListener('click', function() {
+                alert('Navigating to User Profile page...');
+                window.location.href = 'profile.html';
+            });
+
+            // Change search button
+            const changeSearchBtn = document.getElementById('changeSearchBtn');
+            changeSearchBtn.addEventListener('click', function() {
+                alert('Opening search form to change activity...');
+                // In a real app, this would open a search modal
+            });
+
+            // Control buttons interaction
+            const groupButtons = document.querySelectorAll('.group-btn');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            
+            const setupControlButtons = (buttons) => {
+                buttons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        buttons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            };
+            
+            setupControlButtons(groupButtons);
+            setupControlButtons(filterButtons);
+            setupControlButtons(sortButtons);
+
+            // Book buttons functionality
+            const bookButtons = document.querySelectorAll('.option-book-btn');
+            bookButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const optionName = this.getAttribute('data-option');
+                    alert(`Booking: ${optionName}\n\nYou will be redirected to booking page...`);
+                    // In a real app, this would redirect to booking page
+                });
+            });
+
+            // Logo click to go home
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('click', function() {
+                alert('Returning to homepage...');
+                // window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>
