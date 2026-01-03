@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter | Admin Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.9) 0%, rgba(41, 128, 185, 0.8) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .admin-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .admin-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .admin-badge {
+            background-color: #ff7e30;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Page title */
+        .page-title {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f5f7fa;
+        }
+
+        .search-bar button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #1f6391;
+        }
+
+        /* Filter and sort section */
+        .filter-sort-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section, .sort-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-section span, .sort-section span {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .filter-btn, .sort-btn {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .sort-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .filter-btn.active, .sort-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Dashboard layout */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-section {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .dashboard-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-header {
+            background-color: #2980b9;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .section-action-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+
+        .section-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .section-content {
+            padding: 25px;
+        }
+
+        /* Manage Users Section */
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th {
+            background-color: #f5f7fa;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            color: #0a1a3a;
+            border-bottom: 2px solid #e8ecf1;
+        }
+
+        .users-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e8ecf1;
+            color: #555;
+        }
+
+        .user-row:hover {
+            background-color: #f9f9f9;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .user-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .user-action-btn {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .user-action-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .view-btn:hover {
+            color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .edit-btn:hover {
+            color: #f39c12;
+            border-color: #f39c12;
+        }
+
+        .delete-btn:hover {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        /* Popular Cities & Activities */
+        .popular-list {
+            list-style: none;
+        }
+
+        .popular-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e8ecf1;
+        }
+
+        .popular-item:last-child {
+            border-bottom: none;
+        }
+
+        .popular-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .popular-rank {
+            background-color: #2980b9;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 15px;
+        }
+
+        .popular-name {
+            font-weight: 600;
+            color: #0a1a3a;
+            margin-bottom: 3px;
+        }
+
+        .popular-location {
+            color: #777;
+            font-size: 0.85rem;
+        }
+
+        .popular-stats {
+            text-align: right;
+        }
+
+        .popular-count {
+            font-weight: 700;
+            color: #2980b9;
+            font-size: 1.2rem;
+        }
+
+        .popular-trend {
+            font-size: 0.85rem;
+            margin-top: 3px;
+        }
+
+        .trend-up {
+            color: #2ecc71;
+        }
+
+        .trend-down {
+            color: #e74c3c;
+        }
+
+        /* Analytics Charts */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-header {
+            background-color: #2980b9;
+            color: white;
+            padding: 18px 25px;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .chart-body {
+            padding: 20px;
+            height: 300px;
+            position: relative;
+        }
+
+        /* Analytics Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .stat-1 .stat-icon { background-color: #2980b9; }
+        .stat-2 .stat-icon { background-color: #2ecc71; }
+        .stat-3 .stat-icon { background-color: #e74c3c; }
+        .stat-4 .stat-icon { background-color: #f39c12; }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .change-positive {
+            color: #2ecc71;
+        }
+
+        .change-negative {
+            color: #e74c3c;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-sort-container {
+                flex-direction: column;
+            }
+            
+            .filter-section, .sort-section {
+                margin-bottom: 15px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .section-actions {
+                align-self: flex-end;
+            }
+            
+            .users-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and admin profile -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <div class="admin-header">
+                <div class="admin-badge">ADMIN DASHBOARD</div>
+                <div class="admin-profile">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Estemed Salamander</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page title and subtitle -->
+        <h1 class="page-title">Admin Analytics Dashboard</h1>
+        <p class="page-subtitle">Monitor user activities, track popular destinations, analyze trends, and manage the GlobalTrotter community.</p>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search users, trips, cities, or activities...">
+                <button><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <!-- Filter and Sort section -->
+        <div class="filter-sort-container">
+            <div class="filter-section">
+                <span>Group by:</span>
+                <button class="filter-btn active">All Users</button>
+                <button class="filter-btn">Active Users</button>
+                <button class="filter-btn">New Users</button>
+                <button class="filter-btn">Top Travelers</button>
+            </div>
+            <div class="sort-section">
+                <span>Sort by:</span>
+                <button class="sort-btn active">Recent Activity</button>
+                <button class="sort-btn">Trip Count</button>
+                <button class="sort-btn">Registration Date</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="stats-container">
+            <div class="stat-card stat-1">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value">1,247</div>
+                <div class="stat-label">Total Users</div>
+                <div class="stat-change change-positive">+12% this month</div>
+            </div>
+            
+            <div class="stat-card stat-2">
+                <div class="stat-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <div class="stat-value">3,841</div>
+                <div class="stat-label">Total Trips</div>
+                <div class="stat-change change-positive">+18% this month</div>
+            </div>
+            
+            <div class="stat-card stat-3">
+                <div class="stat-icon">
+                    <i class="fas fa-city"></i>
+                </div>
+                <div class="stat-value">142</div>
+                <div class="stat-label">Cities Visited</div>
+                <div class="stat-change change-positive">+5% this month</div>
+            </div>
+            
+            <div class="stat-card stat-4">
+                <div class="stat-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <div class="stat-value">892</div>
+                <div class="stat-label">Shared Itineraries</div>
+                <div class="stat-change change-positive">+22% this month</div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Layout -->
+        <div class="dashboard-layout">
+            <!-- Manage Users Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <div class="section-title">Manage Users</div>
+                    <div class="section-actions">
+                        <button class="section-action-btn"><i class="fas fa-download"></i> Export</button>
+                        <button class="section-action-btn"><i class="fas fa-filter"></i> Filter</button>
+                        <button class="section-action-btn"><i class="fas fa-plus"></i> Add User</button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Trips</th>
+                                <th>Status</th>
+                                <th>Last Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="user-row">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1494790108755-2616b786d4d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Cultivated Owl" class="user-avatar">
+                                    <span class="user-name">Cultivated Owl</span>
+                                </td>
+                                <td>12</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>2 hours ago</td>
+                                <td>
+                                    <div class="user-actions">
+                                        <button class="user-action-btn view-btn"><i class="fas fa-eye"></i> View Trips</button>
+                                        <button class="user-action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="user-row">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Monkey D Garp" class="user-avatar">
+                                    <span class="user-name">Monkey D Garp</span>
+                                </td>
+                                <td>8</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>1 day ago</td>
+                                <td>
+                                    <div class="user-actions">
+                                        <button class="user-action-btn view-btn"><i class="fas fa-eye"></i> View Trips</button>
+                                        <button class="user-action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="user-row">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Definite Coyote" class="user-avatar">
+                                    <span class="user-name">Definite Coyote</span>
+                                </td>
+                                <td>5</td>
+                                <td><span class="user-status status-inactive">Inactive</span></td>
+                                <td>2 weeks ago</td>
+                                <td>
+                                    <div class="user-actions">
+                                        <button class="user-action-btn view-btn"><i class="fas fa-eye"></i> View Trips</button>
+                                        <button class="user-action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="user-row">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Soulful Ram" class="user-avatar">
+                                    <span class="user-name">Soulful Ram</span>
+                                </td>
+                                <td>7</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>3 days ago</td>
+                                <td>
+                                    <div class="user-actions">
+                                        <button class="user-action-btn view-btn"><i class="fas fa-eye"></i> View Trips</button>
+                                        <button class="user-action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="user-row">
+                                <td>
+                                    <img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="M Aswini" class="user-avatar">
+                                    <span class="user-name">M Aswini</span>
+                                </td>
+                                <td>3</td>
+                                <td><span class="user-status status-active">Active</span></td>
+                                <td>5 hours ago</td>
+                                <td>
+                                    <div class="user-actions">
+                                        <button class="user-action-btn view-btn"><i class="fas fa-eye"></i> View Trips</button>
+                                        <button class="user-action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Column - Popular Cities & Activities -->
+            <div class="dashboard-column">
+                <!-- Popular Cities -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <div class="section-title">Popular Cities</div>
+                        <div class="section-actions">
+                            <button class="section-action-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <ul class="popular-list">
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">1</div>
+                                    <div>
+                                        <div class="popular-name">Kyoto</div>
+                                        <div class="popular-location">Japan</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">342 trips</div>
+                                    <div class="popular-trend trend-up">+15% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">2</div>
+                                    <div>
+                                        <div class="popular-name">Bali</div>
+                                        <div class="popular-location">Indonesia</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">298 trips</div>
+                                    <div class="popular-trend trend-up">+22% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">3</div>
+                                    <div>
+                                        <div class="popular-name">Paris</div>
+                                        <div class="popular-location">France</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">267 trips</div>
+                                    <div class="popular-trend trend-up">+8% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">4</div>
+                                    <div>
+                                        <div class="popular-name">Bangkok</div>
+                                        <div class="popular-location">Thailand</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">231 trips</div>
+                                    <div class="popular-trend trend-up">+12% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">5</div>
+                                    <div>
+                                        <div class="popular-name">New York</div>
+                                        <div class="popular-location">USA</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">189 trips</div>
+                                    <div class="popular-trend trend-down">-3% decrease</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Popular Activities -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <div class="section-title">Popular Activities</div>
+                        <div class="section-actions">
+                            <button class="section-action-btn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        <ul class="popular-list">
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">1</div>
+                                    <div>
+                                        <div class="popular-name">Food Tours</div>
+                                        <div class="popular-location">Culinary Experiences</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">876</div>
+                                    <div class="popular-trend trend-up">+28% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">2</div>
+                                    <div>
+                                        <div class="popular-name">Hiking</div>
+                                        <div class="popular-location">Adventure & Nature</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">721</div>
+                                    <div class="popular-trend trend-up">+19% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">3</div>
+                                    <div>
+                                        <div class="popular-name">Cultural Tours</div>
+                                        <div class="popular-location">Historical Sites</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">654</div>
+                                    <div class="popular-trend trend-up">+14% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">4</div>
+                                    <div>
+                                        <div class="popular-name">Beach Activities</div>
+                                        <div class="popular-location">Water Sports & Relaxation</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">532</div>
+                                    <div class="popular-trend trend-up">+9% increase</div>
+                                </div>
+                            </li>
+                            <li class="popular-item">
+                                <div class="popular-info">
+                                    <div class="popular-rank">5</div>
+                                    <div>
+                                        <div class="popular-name">City Exploration</div>
+                                        <div class="popular-location">Urban Sightseeing</div>
+                                    </div>
+                                </div>
+                                <div class="popular-stats">
+                                    <div class="popular-count">487</div>
+                                    <div class="popular-trend trend-up">+7% increase</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Trends and Analytics Charts -->
+        <div class="section-header" style="background-color: transparent; padding: 0; margin-bottom: 20px;">
+            <div class="section-title" style="color: white;">User Trends and Analytics</div>
+        </div>
+
+        <div class="charts-container">
+            <!-- Chart 1: Monthly User Growth -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Monthly User Growth</div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Trip Type Distribution -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">Trip Type Distribution</div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="tripTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>GlobalTrotter Admin Dashboard &copy; 2023 | <a href="#" style="color: #ff7e30;">Privacy Policy</a> | <a href="#" style="color: #ff7e30;">Terms of Service</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter buttons interaction
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Sort buttons interaction
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // User action buttons
+            const viewButtons = document.querySelectorAll('.view-btn');
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const userRow = this.closest('.user-row');
+                    const userName = userRow.querySelector('.user-name').textContent;
+                    alert(`Viewing all trips for user: ${userName}`);
+                });
+            });
+            
+            const editButtons = document.querySelectorAll('.edit-btn');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const userRow = this.closest('.user-row');
+                    const userName = userRow.querySelector('.user-name').textContent;
+                    alert(`Editing user profile: ${userName}`);
+                });
+            });
+            
+            // Search functionality
+            document.querySelector('.search-bar button').addEventListener('click', function() {
+                const searchInput = document.querySelector('.search-bar input');
+                if (searchInput.value.trim() !== '') {
+                    alert(`Searching for: "${searchInput.value}"`);
+                } else {
+                    alert('Please enter a search term');
+                }
+            });
+            
+            // Allow Enter key to trigger search
+            document.querySelector('.search-bar input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.querySelector('.search-bar button').click();
+                }
+            });
+            
+            // Section action buttons
+            document.querySelectorAll('.section-action-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const section = this.closest('.dashboard-section');
+                    const sectionTitle = section.querySelector('.section-title').textContent;
+                    const action = this.textContent.trim();
+                    
+                    if (action.includes('Export')) {
+                        alert(`Exporting data from: ${sectionTitle}`);
+                    } else if (action.includes('Filter')) {
+                        alert(`Applying filters to: ${sectionTitle}`);
+                    } else if (action.includes('Add')) {
+                        alert(`Adding new item to: ${sectionTitle}`);
+                    } else if (action.includes('Refresh')) {
+                        alert(`Refreshing data for: ${sectionTitle}`);
+                    }
+                });
+            });
+            
+            // Admin profile click
+            document.querySelector('.admin-profile').addEventListener('click', function() {
+                alert('Opening admin profile settings');
+            });
+            
+            // Initialize Charts
+            initializeCharts();
+        });
+        
+        function initializeCharts() {
+            // Chart 1: Monthly User Growth (Line Chart)
+            const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+            new Chart(userGrowthCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'New Users',
+                        data: [65, 78, 90, 102, 115, 128, 145, 162, 178, 195, 210, 230],
+                        borderColor: '#2980b9',
+                        backgroundColor: 'rgba(41, 128, 185, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }, {
+                        label: 'Active Users',
+                        data: [120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285],
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Users'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Chart 2: Trip Type Distribution (Doughnut Chart)
+            const tripTypeCtx = document.getElementById('tripTypeChart').getContext('2d');
+            new Chart(tripTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Adventure', 'Cultural', 'Beach', 'City Break', 'Mountain', 'Food & Wine'],
+                    datasets: [{
+                        data: [28, 22, 18, 15, 10, 7],
+                        backgroundColor: [
+                            '#2980b9',
+                            '#2ecc71',
+                            '#e74c3c',
+                            '#f39c12',
+                            '#9b59b6',
+                            '#1abc9c'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
