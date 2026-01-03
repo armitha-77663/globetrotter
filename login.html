@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Trotter | Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         * {
             margin: 0;
@@ -130,10 +129,13 @@
             font-size: 17px;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s;
         }
 
         .login-button:hover {
             background: linear-gradient(to right, #0d5fa1, #1a7fd9);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 110, 184, 0.3);
         }
 
         .register-redirect {
@@ -152,6 +154,25 @@
         .register-redirect a:hover {
             text-decoration: underline;
         }
+        
+        .demo-credentials {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
+            border-left: 4px solid #0E6EB8;
+        }
+        
+        .demo-credentials h4 {
+            color: #0E6EB8;
+            margin-bottom: 8px;
+        }
+        
+        .demo-credentials p {
+            margin: 5px 0;
+        }
     </style>
 </head>
 
@@ -167,12 +188,12 @@
 
     <p class="tagline">Login to continue your journey</p>
 
-    <form>
+    <form id="loginForm">
         <h2 class="form-title">Welcome Back</h2>
 
         <div class="input-group">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="Username or Email" required>
+            <input type="text" id="username" placeholder="Username or Email" required>
         </div>
 
         <div class="input-group">
@@ -184,13 +205,21 @@
         </div>
 
         <div class="options">
-            <label><input type="checkbox"> Remember me</label>
+            <label><input type="checkbox" id="rememberMe"> Remember me</label>
         </div>
 
-        <button class="login-button">
+        <button class="login-button" type="submit">
             <i class="fas fa-sign-in-alt"></i> Login
         </button>
     </form>
+    
+    <!-- Demo credentials section -->
+    <div class="demo-credentials">
+        <h4>Demo Credentials:</h4>
+        <p><strong>Username:</strong> sugavaneshwaran</p>
+        <p><strong>Password:</strong> password123</p>
+        <p><em>Use these to test the login</em></p>
+    </div>
 
     <!-- Redirect link ONLY -->
     <div class="register-redirect">
@@ -199,6 +228,7 @@
 </div>
 
 <script>
+    // Password toggle functionality
     const togglePassword = document.getElementById('togglePassword');
     const password = document.getElementById('password');
     const icon = togglePassword.querySelector('i');
@@ -207,6 +237,46 @@
         password.type = password.type === 'password' ? 'text' : 'password';
         icon.classList.toggle('fa-eye');
         icon.classList.toggle('fa-eye-slash');
+    });
+
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const passwordValue = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+        
+        // Demo validation - in real app, this would be server-side
+        if ((username === 'sugavaneshwaran' || username === 'test@example.com') && passwordValue === 'password123') {
+            // Store login state in localStorage
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('username', username);
+            localStorage.setItem('rememberMe', rememberMe);
+            
+            // Show success message
+            alert('Login successful! Redirecting to dashboard...');
+            
+            // Redirect to dashboard after 1 second
+            setTimeout(() => {
+                window.location.href = 'landing.html';
+            }, 1000);
+        } else {
+            alert('Invalid credentials. Please try again.\n\nFor demo, use:\nUsername: sugavaneshwaran\nPassword: password123');
+        }
+    });
+    
+    // Check if user is already logged in - NO AUTO-REDIRECT
+    window.addEventListener('load', function() {
+        // Populate remembered credentials if available
+        const rememberMe = localStorage.getItem('rememberMe');
+        if (rememberMe === 'true') {
+            const savedUsername = localStorage.getItem('username');
+            if (savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('rememberMe').checked = true;
+            }
+        }
     });
 </script>
 
