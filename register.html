@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Trotter | Register</title>
+    <title>Global Trotter | Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -25,20 +25,18 @@
         }
 
         .container {
-            width: 480px;
-            max-width: 95%;
+            width: 420px;
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border-radius: 20px;
-            padding: 40px 35px;
-            margin: 20px 0;
+            padding: 45px 35px;
         }
 
         .logo {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .logo-icon {
@@ -59,8 +57,7 @@
         .tagline {
             text-align: center;
             color: #555;
-            margin-bottom: 25px;
-            font-size: 15px;
+            margin-bottom: 30px;
         }
 
         .form-title {
@@ -81,53 +78,19 @@
             top: 50%;
             transform: translateY(-50%);
             color: #777;
-            z-index: 2;
         }
 
-        .input-group input, .input-group textarea, .input-group select {
+        .input-group input {
             width: 100%;
             padding: 14px 15px 14px 45px;
             border: 2px solid #ddd;
             border-radius: 10px;
             font-size: 15px;
-            background-color: white;
         }
 
-        .input-group textarea {
-            padding: 14px 15px 14px 45px;
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .input-group select {
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 16px;
-            padding-right: 40px;
-        }
-
-        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+        .input-group input:focus {
             border-color: #0E6EB8;
             outline: none;
-        }
-
-        .input-group.double {
-            display: flex;
-            gap: 15px;
-        }
-
-        .input-group.double .input-field {
-            flex: 1;
-            position: relative;
-        }
-
-        .input-group.double i {
-            left: 15px;
         }
 
         .password-toggle {
@@ -137,10 +100,26 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: #777;
-            z-index: 2;
         }
 
-        .register-button {
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .forgot-password {
+            color: #0E6EB8;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .login-button {
             width: 100%;
             padding: 14px;
             background: linear-gradient(to right, #0E6EB8, #1E90FF);
@@ -150,69 +129,53 @@
             font-size: 17px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
             transition: all 0.3s;
         }
 
-        .register-button:hover {
+        .login-button:hover {
             background: linear-gradient(to right, #0d5fa1, #1a7fd9);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(14, 110, 184, 0.3);
         }
 
-        .login-redirect {
+        .register-redirect {
             text-align: center;
             margin-top: 25px;
             font-size: 14px;
             color: #555;
         }
 
-        .login-redirect a {
+        .register-redirect a {
             color: #0E6EB8;
             font-weight: 600;
             text-decoration: none;
         }
 
-        .login-redirect a:hover {
+        .register-redirect a:hover {
             text-decoration: underline;
         }
-
-        .terms-checkbox {
-            display: flex;
-            align-items: flex-start;
-            margin: 20px 0;
-            font-size: 14px;
+        
+        .demo-credentials {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
             color: #555;
+            border-left: 4px solid #0E6EB8;
         }
-
-        .terms-checkbox input {
-            margin-right: 10px;
-            margin-top: 3px;
-        }
-
-        .terms-checkbox a {
+        
+        .demo-credentials h4 {
             color: #0E6EB8;
-            text-decoration: none;
+            margin-bottom: 8px;
         }
-
-        .terms-checkbox a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 520px) {
-            .container {
-                padding: 30px 20px;
-                width: 95%;
-            }
-            
-            .input-group.double {
-                flex-direction: column;
-                gap: 20px;
-            }
+        
+        .demo-credentials p {
+            margin: 5px 0;
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -223,89 +186,44 @@
         <h1>Global<span>Trotter</span></h1>
     </div>
 
-    <p class="tagline">Create an account to start your journey</p>
+    <p class="tagline">Login to continue your journey</p>
 
-    <form id="registerForm">
-        <h2 class="form-title">Join Our Community</h2>
-
-        <div class="input-group double">
-            <div class="input-field">
-                <i class="fas fa-user"></i>
-                <input type="text" id="firstName" placeholder="First Name" required>
-            </div>
-            <div class="input-field">
-                <i class="fas fa-user"></i>
-                <input type="text" id="lastName" placeholder="Last Name" required>
-            </div>
-        </div>
+    <form id="loginForm">
+        <h2 class="form-title">Welcome Back</h2>
 
         <div class="input-group">
-            <i class="fas fa-envelope"></i>
-            <input type="email" id="email" placeholder="Email Address" required>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-phone"></i>
-            <input type="tel" id="phone" placeholder="Phone Number">
-        </div>
-
-        <div class="input-group double">
-            <div class="input-field">
-                <i class="fas fa-city"></i>
-                <input type="text" id="city" placeholder="City">
-            </div>
-            <div class="input-field">
-                <i class="fas fa-globe"></i>
-                <select id="country">
-                    <option value="" disabled selected>Select Country</option>
-                    <option value="india">India</option>
-                    <option value="usa">United States</option>
-                    <option value="uk">United Kingdom</option>
-                    <option value="canada">Canada</option>
-                    <option value="australia">Australia</option>
-                    <option value="germany">Germany</option>
-                    <option value="france">France</option>
-                    <option value="japan">Japan</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
+            <i class="fas fa-user"></i>
+            <input type="text" id="username" placeholder="Username or Email" required>
         </div>
 
         <div class="input-group">
             <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Password" required minlength="6">
+            <input type="password" id="password" placeholder="Password" required>
             <span class="password-toggle" id="togglePassword">
                 <i class="far fa-eye"></i>
             </span>
         </div>
 
-        <div class="input-group">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="confirmPassword" placeholder="Confirm Password" required minlength="6">
-            <span class="password-toggle" id="toggleConfirmPassword">
-                <i class="far fa-eye"></i>
-            </span>
+        <div class="options">
+            <label><input type="checkbox" id="rememberMe"> Remember me</label>
         </div>
 
-        <div class="input-group">
-            <i class="fas fa-info-circle"></i>
-            <textarea id="additionalInfo" placeholder="Additional Information (Optional)"></textarea>
-        </div>
-
-        <div class="terms-checkbox">
-            <input type="checkbox" id="terms" required>
-            <label for="terms">
-                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-            </label>
-        </div>
-
-        <button class="register-button" type="submit">
-            <i class="fas fa-user-plus"></i> Create Account
+        <button class="login-button" type="submit">
+            <i class="fas fa-sign-in-alt"></i> Login
         </button>
     </form>
+    
+    <!-- Demo credentials section -->
+    <div class="demo-credentials">
+        <h4>Demo Credentials:</h4>
+        <p><strong>Username:</strong> sugavaneshwaran</p>
+        <p><strong>Password:</strong> password123</p>
+        <p><em>Use these to test the login</em></p>
+    </div>
 
-    <div class="login-redirect">
-        Already have an account? <a href="login.html">Sign in here</a>
+    <!-- Redirect link ONLY -->
+    <div class="register-redirect">
+        New user? <a href="register.html">Create an account</a>
     </div>
 </div>
 
@@ -313,87 +231,53 @@
     // Password toggle functionality
     const togglePassword = document.getElementById('togglePassword');
     const password = document.getElementById('password');
-    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-    const confirmPassword = document.getElementById('confirmPassword');
+    const icon = togglePassword.querySelector('i');
 
-    function togglePasswordVisibility(field, toggleIcon) {
-        const icon = toggleIcon.querySelector('i');
-        field.type = field.type === 'password' ? 'text' : 'password';
+    togglePassword.addEventListener('click', () => {
+        password.type = password.type === 'password' ? 'text' : 'password';
         icon.classList.toggle('fa-eye');
         icon.classList.toggle('fa-eye-slash');
-    }
+    });
 
-    togglePassword.addEventListener('click', () => togglePasswordVisibility(password, togglePassword));
-    toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPassword, toggleConfirmPassword));
-
-    // Form validation and submission
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get form values
-        const firstName = document.getElementById('firstName').value;
-        const lastName = document.getElementById('lastName').value;
-        const email = document.getElementById('email').value;
-        const passwordValue = password.value;
-        const confirmPasswordValue = confirmPassword.value;
-        const termsChecked = document.getElementById('terms').checked;
+        const username = document.getElementById('username').value;
+        const passwordValue = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
         
-        // Validate passwords match
-        if (passwordValue !== confirmPasswordValue) {
-            alert("Passwords do not match. Please try again.");
-            password.focus();
-            return;
+        // Demo validation - in real app, this would be server-side
+        if ((username === 'sugavaneshwaran' || username === 'test@example.com') && passwordValue === 'password123') {
+            // Store login state in localStorage
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('username', username);
+            localStorage.setItem('rememberMe', rememberMe);
+            
+            // Show success message
+            alert('Login successful! Redirecting to dashboard...');
+            
+            // Redirect to dashboard after 1 second
+            setTimeout(() => {
+                window.location.href = 'landing.html';
+            }, 1000);
+        } else {
+            alert('Invalid credentials. Please try again.\n\nFor demo, use:\nUsername: sugavaneshwaran\nPassword: password123');
         }
-        
-        // Validate password length
-        if (passwordValue.length < 6) {
-            alert("Password must be at least 6 characters long.");
-            password.focus();
-            return;
-        }
-        
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            alert("Please enter a valid email address.");
-            document.getElementById('email').focus();
-            return;
-        }
-        
-        // Validate terms agreement
-        if (!termsChecked) {
-            alert("You must agree to the Terms of Service and Privacy Policy.");
-            return;
-        }
-        
-        // Store user data in localStorage (for demo purposes)
-        const userData = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phone: document.getElementById('phone').value,
-            city: document.getElementById('city').value,
-            country: document.getElementById('country').value,
-            additionalInfo: document.getElementById('additionalInfo').value
-        };
-        
-        localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', firstName + ' ' + lastName);
-        
-        // Show success message
-        alert("Account created successfully! You will be redirected to the dashboard.");
-        
-        // Redirect to landing page after 1.5 seconds
-        setTimeout(() => {
-            window.location.href = 'landing.html';
-        }, 1500);
     });
     
-    // NO AUTO-REDIRECT - User stays on register page
-    // window.addEventListener('load', function() {
-    //   // Auto-redirect code removed
-    // });
+    // Check if user is already logged in - NO AUTO-REDIRECT
+    window.addEventListener('load', function() {
+        // Populate remembered credentials if available
+        const rememberMe = localStorage.getItem('rememberMe');
+        if (rememberMe === 'true') {
+            const savedUsername = localStorage.getItem('username');
+            if (savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('rememberMe').checked = true;
+            }
+        }
+    });
 </script>
 
 </body>
