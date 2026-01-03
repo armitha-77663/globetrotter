@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter | Community</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Page title */
+        .page-title {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f5f7fa;
+        }
+
+        .search-bar button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #1f6391;
+        }
+
+        /* Filter and sort section */
+        .filter-sort-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section, .sort-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-section span, .sort-section span {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .filter-btn, .sort-btn {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .sort-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .filter-btn.active, .sort-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Community posts container */
+        .community-posts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Community post card */
+        .community-post {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .community-post:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .post-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+            flex-shrink: 0;
+            border: 3px solid #2980b9;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            margin-bottom: 5px;
+        }
+
+        .user-tag {
+            display: inline-block;
+            background-color: #f5f7fa;
+            color: #555;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .post-meta {
+            display: flex;
+            color: #777;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .post-meta span {
+            margin-right: 15px;
+        }
+
+        .post-meta i {
+            margin-right: 5px;
+            color: #2980b9;
+        }
+
+        .post-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0a1a3a;
+            margin-bottom: 15px;
+            padding-left: 90px; /* Align with comment text */
+        }
+
+        .post-comment {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding-left: 90px; /* Align with user avatar */
+            font-size: 1.05rem;
+        }
+
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding-left: 90px;
+        }
+
+        .post-tag {
+            background-color: #e8f4fc;
+            color: #2980b9;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: flex-end;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .post-action-btn {
+            background-color: #f5f7fa;
+            color: #0a1a3a;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+
+        .post-action-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .like-btn:hover {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .comment-btn:hover {
+            color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .share-btn:hover {
+            color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .post-header {
+                flex-direction: column;
+            }
+            
+            .user-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .post-title, .post-comment, .post-tags {
+                padding-left: 0;
+            }
+            
+            .filter-sort-container {
+                flex-direction: column;
+            }
+            
+            .filter-section, .sort-section {
+                margin-bottom: 15px;
+            }
+            
+            .post-actions {
+                justify-content: center;
+            }
+            
+            .post-action-btn {
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and user profile -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Traveler Profile</span>
+            </div>
+        </header>
+
+        <!-- Page title and subtitle -->
+        <h1 class="page-title">Community Experiences</h1>
+        <p class="page-subtitle">Share your travel stories, get inspired by others' journeys, and connect with fellow travelers from around the world. Discover hidden gems and plan your next adventure!</p>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search for experiences, destinations, or activities...">
+                <button><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <!-- Filter and Sort section -->
+        <div class="filter-sort-container">
+            <div class="filter-section">
+                <span>Group by:</span>
+                <button class="filter-btn active">All Posts</button>
+                <button class="filter-btn">Destination</button>
+                <button class="filter-btn">Travel Type</button>
+                <button class="filter-btn">User Rating</button>
+            </div>
+            <div class="sort-section">
+                <span>Sort by:</span>
+                <button class="sort-btn active">Recent</button>
+                <button class="sort-btn">Popular</button>
+                <button class="sort-btn">Most Liked</button>
+            </div>
+        </div>
+
+        <!-- Community posts -->
+        <div class="community-posts-container">
+            <!-- Post 1: Cultivated Owl -->
+            <div class="community-post">
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b786d4d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Cultivated Owl">
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">Cultivated Owl</div>
+                            <div class="user-tag">Seasoned Traveler</div>
+                            <div class="post-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Kyoto, Japan</span>
+                                <span><i class="fas fa-calendar"></i> Posted 2 days ago</span>
+                                <span><i class="fas fa-star"></i> 4.8/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <h3 class="post-title">Magical Cherry Blossom Experience in Kyoto</h3>
+                        <p class="post-comment">
+                            The cherry blossom season in Kyoto was absolutely breathtaking! We visited during the first week of April and the entire city was blanketed in delicate pink flowers. 
+                            The Philosopher's Path was the highlight of our trip - a two-kilometer stone path along a canal lined with hundreds of cherry trees. Waking up early to avoid crowds 
+                            was the best advice we received. The temples with cherry blossom backdrops created picture-perfect moments at every turn.
+                        </p>
+                        <div class="post-tags">
+                            <span class="post-tag">Japan</span>
+                            <span class="post-tag">Cherry Blossoms</span>
+                            <span class="post-tag">Cultural Experience</span>
+                            <span class="post-tag">Spring Travel</span>
+                        </div>
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn"><i class="fas fa-heart"></i> 142 Likes</button>
+                        <button class="post-action-btn comment-btn"><i class="fas fa-comment"></i> 24 Comments</button>
+                        <button class="post-action-btn share-btn"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 2: Monkey D Garp -->
+            <div class="community-post">
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Monkey D Garp">
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">Monkey D Garp</div>
+                            <div class="user-tag">Adventure Seeker</div>
+                            <div class="post-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Patagonia, Chile</span>
+                                <span><i class="fas fa-calendar"></i> Posted 5 days ago</span>
+                                <span><i class="fas fa-star"></i> 5.0/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <h3 class="post-title">Conquering the W Trek in Torres del Paine</h3>
+                        <p class="post-comment">
+                            Just completed the 5-day W Trek in Torres del Paine National Park and it was the most challenging yet rewarding experience of my life! The turquoise lakes, towering granite peaks, 
+                            and massive glaciers were absolutely surreal. Day 3 to the French Valley was particularly epic - we witnessed several avalanches on the mountains across the valley. 
+                            Pro tip: book refugios well in advance and pack for all four seasons in a single day. The weather changes rapidly but that's part of the adventure!
+                        </p>
+                        <div class="post-tags">
+                            <span class="post-tag">Hiking</span>
+                            <span class="post-tag">Patagonia</span>
+                            <span class="post-tag">Adventure</span>
+                            <span class="post-tag">Nature</span>
+                        </div>
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn"><i class="fas fa-heart"></i> 89 Likes</button>
+                        <button class="post-action-btn comment-btn"><i class="fas fa-comment"></i> 17 Comments</button>
+                        <button class="post-action-btn share-btn"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 3: Definite Coyote -->
+            <div class="community-post">
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Definite Coyote">
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">Definite Coyote</div>
+                            <div class="user-tag">Food & Culture Explorer</div>
+                            <div class="post-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Bangkok, Thailand</span>
+                                <span><i class="fas fa-calendar"></i> Posted 1 week ago</span>
+                                <span><i class="fas fa-star"></i> 4.5/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <h3 class="post-title">Street Food Paradise in Bangkok's Chinatown</h3>
+                        <p class="post-comment">
+                            Yaowarat Road in Bangkok's Chinatown is a culinary wonderland that operates from dusk till dawn! We tried everything from Michelin-recommended street food stalls 
+                            to hidden gems in tiny alleys. The braised goose noodles at Nai Ek Roll Noodle were incredible, and the seafood at T&K Restaurant lived up to its legendary status. 
+                            Don't miss the mango sticky rice from Kor Panich - it's worth the trip alone. The vibrant atmosphere with neon signs, bustling crowds, and sizzling woks creates an 
+                            unforgettable sensory experience.
+                        </p>
+                        <div class="post-tags">
+                            <span class="post-tag">Food Travel</span>
+                            <span class="post-tag">Thailand</span>
+                            <span class="post-tag">Street Food</span>
+                            <span class="post-tag">Cultural Immersion</span>
+                        </div>
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn"><i class="fas fa-heart"></i> 203 Likes</button>
+                        <button class="post-action-btn comment-btn"><i class="fas fa-comment"></i> 42 Comments</button>
+                        <button class="post-action-btn share-btn"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post 4: Soulful Ram -->
+            <div class="community-post">
+                <div class="post-content">
+                    <div class="post-header">
+                        <div class="user-avatar">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Soulful Ram">
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name">Soulful Ram</div>
+                            <div class="user-tag">Solo Traveler</div>
+                            <div class="post-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> Marrakech, Morocco</span>
+                                <span><i class="fas fa-calendar"></i> Posted 2 weeks ago</span>
+                                <span><i class="fas fa-star"></i> 4.7/5 Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <h3 class="post-title">Finding Solace in the Chaos of Marrakech</h3>
+                        <p class="post-comment">
+                            As a solo female traveler, I was initially apprehensive about visiting Marrakech, but it turned out to be one of my most transformative journeys. The medina is 
+                            a maze of colors, scents, and sounds that both overwhelms and enchants. I found peace in the hidden riads with their tranquil courtyards and refreshing pools. 
+                            The Bahia Palace with its intricate tilework and the serene Jardin Majorelle were absolute highlights. Connecting with local women through a traditional cooking 
+                            class gave me insights into Moroccan culture I could never have gotten otherwise.
+                        </p>
+                        <div class="post-tags">
+                            <span class="post-tag">Solo Travel</span>
+                            <span class="post-tag">Morocco</span>
+                            <span class="post-tag">Cultural Immersion</span>
+                            <span class="post-tag">Women Travel</span>
+                        </div>
+                    </div>
+                    <div class="post-actions">
+                        <button class="post-action-btn like-btn"><i class="fas fa-heart"></i> 167 Likes</button>
+                        <button class="post-action-btn comment-btn"><i class="fas fa-comment"></i> 31 Comments</button>
+                        <button class="post-action-btn share-btn"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>GlobalTrotter &copy; 2023 | Your Journey, Our Passion | <a href="#" style="color: #ff7e30;">Privacy Policy</a> | <a href="#" style="color: #ff7e30;">Terms of Service</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter buttons interaction
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter posts based on selection
+                    const filterType = this.textContent;
+                    alert(`Filtering posts by: ${filterType}`);
+                });
+            });
+            
+            // Sort buttons interaction
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Sort posts based on selection
+                    const sortType = this.textContent;
+                    alert(`Sorting posts by: ${sortType}`);
+                });
+            });
+            
+            // Post action buttons functionality
+            const likeButtons = document.querySelectorAll('.like-btn');
+            likeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const post = this.closest('.community-post');
+                    const userName = post.querySelector('.user-name').textContent;
+                    
+                    // Toggle like state
+                    if (this.classList.contains('liked')) {
+                        this.classList.remove('liked');
+                        this.innerHTML = '<i class="fas fa-heart"></i> Like';
+                        alert(`Unliked ${userName}'s post`);
+                    } else {
+                        this.classList.add('liked');
+                        this.innerHTML = '<i class="fas fa-heart" style="color:#e74c3c"></i> Liked';
+                        alert(`Liked ${userName}'s post`);
+                    }
+                });
+            });
+            
+            // Comment buttons functionality
+            const commentButtons = document.querySelectorAll('.comment-btn');
+            commentButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const post = this.closest('.community-post');
+                    const userName = post.querySelector('.user-name').textContent;
+                    const comment = prompt(`Add a comment to ${userName}'s post:`);
+                    
+                    if (comment) {
+                        alert(`Comment added: "${comment}"`);
+                    }
+                });
+            });
+            
+            // Share buttons functionality
+            const shareButtons = document.querySelectorAll('.share-btn');
+            shareButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const post = this.closest('.community-post');
+                    const userName = post.querySelector('.user-name').textContent;
+                    const postTitle = post.querySelector('.post-title').textContent;
+                    
+                    alert(`Sharing ${userName}'s post: "${postTitle}"`);
+                });
+            });
+            
+            // User profile click
+            document.querySelector('.user-profile').addEventListener('click', function() {
+                window.location.href = 'profile.html';
+            });
+            
+            // Search functionality
+            document.querySelector('.search-bar button').addEventListener('click', function() {
+                const searchInput = document.querySelector('.search-bar input');
+                if (searchInput.value.trim() !== '') {
+                    alert(`Searching for: "${searchInput.value}"`);
+                } else {
+                    alert('Please enter a search term');
+                }
+            });
+            
+            // Allow Enter key to trigger search
+            document.querySelector('.search-bar input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.querySelector('.search-bar button').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
