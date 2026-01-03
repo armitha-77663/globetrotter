@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter | Trip Listing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a1a3a;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Background with travel image */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.85;
+            z-index: -1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 26, 58, 0.85) 0%, rgba(41, 128, 185, 0.7) 100%);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo span {
+            color: #ff7e30;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Search bar styling */
+        .search-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            background-color: #f5f7fa;
+        }
+
+        .search-bar button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #1f6391;
+        }
+
+        /* Filter and sort section */
+        .filter-sort-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section, .sort-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-section span, .sort-section span {
+            margin-right: 10px;
+            font-weight: 600;
+            color: #0a1a3a;
+        }
+
+        .filter-btn, .sort-btn {
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .sort-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        .filter-btn.active, .sort-btn.active {
+            background-color: #ff7e30;
+            color: white;
+            border-color: #ff7e30;
+        }
+
+        /* Trip categories */
+        .trip-categories {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-tab {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #0a1a3a;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .category-tab:hover {
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .category-tab.active {
+            background-color: white;
+            color: #2980b9;
+            border-bottom: 3px solid #ff7e30;
+        }
+
+        /* Trip cards container */
+        .trip-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .trip-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .trip-image {
+            height: 180px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .trip-content {
+            padding: 20px;
+        }
+
+        .trip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .trip-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0a1a3a;
+        }
+
+        .trip-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-ongoing {
+            background-color: #2ecc71;
+        }
+
+        .status-upcoming {
+            background-color: #f39c12;
+        }
+
+        .status-completed {
+            background-color: #7f8c8d;
+        }
+
+        .trip-description {
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .trip-details {
+            display: flex;
+            justify-content: space-between;
+            color: #777;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .trip-details i {
+            margin-right: 5px;
+            color: #2980b9;
+        }
+
+        .trip-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.9rem;
+        }
+
+        .view-btn {
+            background-color: #2980b9;
+            color: white;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .view-btn:hover {
+            background-color: #1f6391;
+        }
+
+        .edit-btn {
+            background-color: #f5f7fa;
+            color: #0a1a3a;
+            border: 1px solid #ddd;
+        }
+
+        .edit-btn:hover {
+            background-color: #e8ecf1;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .trip-cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-sort-container {
+                flex-direction: column;
+            }
+            
+            .filter-section, .sort-section {
+                margin-bottom: 15px;
+            }
+            
+            .trip-categories {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background image with overlay -->
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header with logo and user profile -->
+        <header>
+            <div class="logo">Global<span>Trotter</span></div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                <span>Traveler Profile</span>
+            </div>
+        </header>
+
+        <!-- Search bar -->
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" placeholder="Search for trips, destinations, or activities...">
+                <button><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+
+        <!-- Filter and Sort section -->
+        <div class="filter-sort-container">
+            <div class="filter-section">
+                <span>Filter by:</span>
+                <button class="filter-btn active">All Trips</button>
+                <button class="filter-btn">Adventure</button>
+                <button class="filter-btn">Cultural</button>
+                <button class="filter-btn">Beach</button>
+                <button class="filter-btn">Mountain</button>
+            </div>
+            <div class="sort-section">
+                <span>Sort by:</span>
+                <button class="sort-btn active">Date</button>
+                <button class="sort-btn">Duration</button>
+                <button class="sort-btn">Price</button>
+            </div>
+        </div>
+
+        <!-- Trip category tabs -->
+        <div class="trip-categories">
+            <div class="category-tab active" data-category="ongoing">Ongoing</div>
+            <div class="category-tab" data-category="upcoming">Up-coming</div>
+            <div class="category-tab" data-category="completed">Completed</div>
+        </div>
+
+        <!-- Trip cards -->
+        <div class="trip-cards-container">
+            <!-- Ongoing Trip Card -->
+            <div class="trip-card ongoing-trip">
+                <div class="trip-image" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+                <div class="trip-content">
+                    <div class="trip-header">
+                        <div class="trip-title">Bali Cultural Escape</div>
+                        <div class="trip-status status-ongoing">Ongoing</div>
+                    </div>
+                    <p class="trip-description">Immersive cultural journey through Bali's temples, traditional dances, and local cuisine. Experience the spiritual heart of Indonesia.</p>
+                    <div class="trip-details">
+                        <div><i class="fas fa-calendar"></i> 5 days left</div>
+                        <div><i class="fas fa-users"></i> 4 travelers</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Bali, Indonesia</div>
+                    </div>
+                    <div class="trip-actions">
+                        <button class="action-btn view-btn"><i class="fas fa-eye"></i> View Details</button>
+                        <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Edit</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Trip Card -->
+            <div class="trip-card upcoming-trip">
+                <div class="trip-image" style="background-image: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80')"></div>
+                <div class="trip-content">
+                    <div class="trip-header">
+                        <div class="trip-title">Swiss Alps Adventure</div>
+                        <div class="trip-status status-upcoming">Up-coming</div>
+                    </div>
+                    <p class="trip-description">Hiking through the majestic Swiss Alps with expert guides. Experience breathtaking views and authentic mountain villages.</p>
+                    <div class="trip-details">
+                        <div><i class="fas fa-calendar"></i> Starts in 12 days</div>
+                        <div><i class="fas fa-users"></i> 6 travelers</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Interlaken, Switzerland</div>
+                    </div>
+                    <div class="trip-actions">
+                        <button class="action-btn view-btn"><i class="fas fa-eye"></i> View Details</button>
+                        <button class="action-btn edit-btn"><i class="fas fa-edit"></i> Modify</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Trip Card -->
+            <div class="trip-card completed-trip">
+                <div class="trip-image" style="background-image: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=60')"></div>
+                <div class="trip-content">
+                    <div class="trip-header">
+                        <div class="trip-title">Japan Cherry Blossom Tour</div>
+                        <div class="trip-status status-completed">Completed</div>
+                    </div>
+                    <p class="trip-description">Witnessed the breathtaking cherry blossoms in Tokyo, Kyoto, and Osaka. Explored ancient temples and modern marvels.</p>
+                    <div class="trip-details">
+                        <div><i class="fas fa-calendar"></i> Completed Apr 2023</div>
+                        <div><i class="fas fa-users"></i> 2 travelers</div>
+                        <div><i class="fas fa-map-marker-alt"></i> Tokyo, Japan</div>
+                    </div>
+                    <div class="trip-actions">
+                        <button class="action-btn view-btn"><i class="fas fa-eye"></i> View Memories</button>
+                        <button class="action-btn edit-btn"><i class="fas fa-share-alt"></i> Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>GlobalTrotter &copy; 2023 | Your Journey, Our Passion | <a href="#" style="color: #ff7e30;">Privacy Policy</a> | <a href="#" style="color: #ff7e30;">Terms of Service</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category tab switching
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const tripCards = document.querySelectorAll('.trip-card');
+            
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Show/hide trip cards based on category
+                    tripCards.forEach(card => {
+                        if (category === 'ongoing' && card.classList.contains('ongoing-trip')) {
+                            card.style.display = 'block';
+                        } else if (category === 'upcoming' && card.classList.contains('upcoming-trip')) {
+                            card.style.display = 'block';
+                        } else if (category === 'completed' && card.classList.contains('completed-trip')) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Filter buttons interaction
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Sort buttons interaction
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            sortButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sortButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Action buttons functionality
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.trip-card');
+                    const title = card.querySelector('.trip-title').textContent;
+                    
+                    if (this.classList.contains('view-btn')) {
+                        alert(`Viewing details for: ${title}`);
+                    } else if (this.classList.contains('edit-btn')) {
+                        alert(`Editing trip: ${title}`);
+                    }
+                });
+            });
+            
+            // User profile click
+            document.querySelector('.user-profile').addEventListener('click', function() {
+                alert('Opening user profile settings');
+            });
+        });
+    </script>
+</body>
+</html>
