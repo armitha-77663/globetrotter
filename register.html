@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Trotter | Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: 
+                linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80')
+                no-repeat center center/cover;
+        }
+
+        .container {
+            width: 480px;
+            max-width: 95%;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 40px 35px;
+            margin: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+            color: #0E6EB8;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 26px;
+            color: #0E6EB8;
+        }
+
+        .logo span {
+            color: #FF7E30;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #555;
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            z-index: 2;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            background-color: white;
+        }
+
+        .input-group textarea {
+            padding: 14px 15px 14px 45px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .input-group select {
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            border-color: #0E6EB8;
+            outline: none;
+        }
+
+        .input-group.double {
+            display: flex;
+            gap: 15px;
+        }
+
+        .input-group.double .input-field {
+            flex: 1;
+            position: relative;
+        }
+
+        .input-group.double i {
+            left: 15px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #777;
+            z-index: 2;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #0E6EB8, #1E90FF);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .register-button:hover {
+            background: linear-gradient(to right, #0d5fa1, #1a7fd9);
+        }
+
+        .login-redirect {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .login-redirect a {
+            color: #0E6EB8;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-redirect a:hover {
+            text-decoration: underline;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .terms-checkbox input {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        .terms-checkbox a {
+            color: #0E6EB8;
+            text-decoration: none;
+        }
+
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 520px) {
+            .container {
+                padding: 30px 20px;
+                width: 95%;
+            }
+            
+            .input-group.double {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-globe-americas"></i>
+        </div>
+        <h1>Global<span>Trotter</span></h1>
+    </div>
+
+    <p class="tagline">Create an account to start your journey</p>
+
+    <form id="registerForm">
+        <h2 class="form-title">Join Our Community</h2>
+
+        <div class="input-group double">
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="First Name" required>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Last Name" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Email Address" required>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="tel" placeholder="Phone Number">
+        </div>
+
+        <div class="input-group double">
+            <div class="input-field">
+                <i class="fas fa-city"></i>
+                <input type="text" placeholder="City">
+            </div>
+            <div class="input-field">
+                <i class="fas fa-globe"></i>
+                <select>
+                    <option value="" disabled selected>Select Country</option>
+                    <option value="usa">United States</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="canada">Canada</option>
+                    <option value="australia">Australia</option>
+                    <option value="germany">Germany</option>
+                    <option value="france">France</option>
+                    <option value="japan">Japan</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="password-toggle" id="togglePassword">
+                <i class="far fa-eye"></i>
+            </span>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <span class="password-toggle" id="toggleConfirmPassword">
+                <i class="far fa-eye"></i>
+            </span>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-info-circle"></i>
+            <textarea placeholder="Additional Information (Optional)"></textarea>
+        </div>
+
+        <div class="terms-checkbox">
+            <input type="checkbox" id="terms" required>
+            <label for="terms">
+                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </label>
+        </div>
+
+        <button class="register-button" type="submit">
+            <i class="fas fa-user-plus"></i> Create Account
+        </button>
+    </form>
+
+    <div class="login-redirect">
+        Already have an account? <a href="login.html">Sign in here</a>
+    </div>
+</div>
+
+<script>
+    // Password toggle functionality
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+
+    function togglePasswordVisibility(field, toggleIcon) {
+        const icon = toggleIcon.querySelector('i');
+        field.type = field.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+
+    togglePassword.addEventListener('click', () => togglePasswordVisibility(password, togglePassword));
+    toggleConfirmPassword.addEventListener('click', () => togglePasswordVisibility(confirmPassword, toggleConfirmPassword));
+
+    // Form validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const passwordValue = password.value;
+        const confirmPasswordValue = confirmPassword.value;
+        const termsChecked = document.getElementById('terms').checked;
+        
+        // Validate passwords match
+        if (passwordValue !== confirmPasswordValue) {
+            alert("Passwords do not match. Please try again.");
+            password.focus();
+            return;
+        }
+        
+        // Validate terms agreement
+        if (!termsChecked) {
+            alert("You must agree to the Terms of Service and Privacy Policy.");
+            return;
+        }
+        
+        // If all validation passes
+        alert("Account created successfully! You can now login.");
+        // In a real application, you would submit the form data to a server here
+        // For this example, we'll just reset the form
+        this.reset();
+    });
+</script>
+
+</body>
+</html>
