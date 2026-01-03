@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalTrotter | Travel Itinerary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            background: #f8f9fa;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Travel Photography Background */
+        .travel-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.95)),
+                url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #FF6B35;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 105, 148, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #FF6B35, #FF9E6D);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #006994;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .logo-text h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: #006994;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text h1 span {
+            color: #FF6B35;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .current-trip {
+            background: #006994;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .current-trip h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .current-trip p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: 2px solid #006994;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #006994, #4A90E2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            border: 3px solid #FF6B35;
+        }
+
+        .user-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #006994;
+        }
+
+        .user-details p {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Page Header */
+        .page-title {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 105, 148, 0.1);
+            border-left: 6px solid #FF6B35;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23006994" opacity="0.05" d="M0,0 L100,0 L100,100 Z"/></svg>');
+        }
+
+        .title-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-text h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 48px;
+            font-weight: 800;
+            color: #006994;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .title-text h2 span {
+            color: #FF6B35;
+            display: block;
+        }
+
+        .title-text p {
+            font-size: 18px;
+            color: #666;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .title-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 16px 30px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .print-btn {
+            background: white;
+            color: #006994;
+            border: 2px solid #006994;
+        }
+
+        .print-btn:hover {
+            background: #006994;
+            color: white;
+        }
+
+        .add-btn {
+            background: #FF6B35;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Trip Overview */
+        .trip-overview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .overview-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 105, 148, 0.1);
+            border-top: 4px solid #FF6B35;
+            transition: transform 0.3s ease;
+        }
+
+        .overview-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .overview-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #FF6B35, #FF9E6D);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+
+        .overview-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: #006994;
+            margin-bottom: 10px;
+        }
+
+        .overview-label {
+            font-size: 16px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Itinerary Sections */
+        .section-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 105, 148, 0.1);
+            border-left: 5px solid #006994;
+        }
+
+        .section-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #006994;
+        }
+
+        .section-header p {
+            color: #666;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .itinerary-container {
+            margin-bottom: 60px;
+        }
+
+        .itinerary-item {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 105, 148, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 105, 148, 0.1);
+        }
+
+        .itinerary-item:hover {
+            box-shadow: 0 15px 40px rgba(0, 105, 148, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 40px;
+            background: linear-gradient(135deg, #006994, #4A90E2);
+            color: white;
+        }
+
+        .item-title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .item-text h4 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .item-text p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .item-status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-content {
+            padding: 40px;
+        }
+
+        .item-description {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .item-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 105, 148, 0.1);
+        }
+
+        .detail-item h5 {
+            font-size: 14px;
+            color: #006994;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .detail-value.orange {
+            color: #FF6B35;
+        }
+
+        .detail-value.blue {
+            color: #006994;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .item-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-item {
+            background: #e8f4ff;
+            color: #006994;
+            border: 2px solid #006994;
+        }
+
+        .edit-item:hover {
+            background: #006994;
+            color: white;
+        }
+
+        .view-item {
+            background: #fff0e8;
+            color: #FF6B35;
+            border: 2px solid #FF6B35;
+        }
+
+        .view-item:hover {
+            background: #FF6B35;
+            color: white;
+        }
+
+        /* Journey Map */
+        .journey-map {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 40px rgba(0, 105, 148, 0.1);
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .map-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #006994;
+        }
+
+        .map-container {
+            height: 300px;
+            background: linear-gradient(135deg, #e8f4ff, #c2e0ff);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #006994;
+        }
+
+        .map-image {
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.8;
+        }
+
+        .map-point {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            border: 3px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .point-orange {
+            background: #FF6B35;
+        }
+
+        .point-blue {
+            background: #006994;
+        }
+
+        .point-mumbai { top: 70%; left: 78%; }
+        .point-paris { top: 45%; left: 50%; }
+        .point-rome { top: 55%; left: 55%; }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 50px 40px 30px;
+            box-shadow: 0 10px 40px rgba(0, 105, 148, 0.1);
+            border-top: 4px solid #FF6B35;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #006994;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FF6B35;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #555;
+            text-decoration: none;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #FF6B35;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 105, 148, 0.1);
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer-bottom p {
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .trip-overview,
+            .item-details,
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            header,
+            .title-content {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .user-info {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .trip-overview,
+            .item-details,
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .item-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .title-text h2 {
+                font-size: 36px;
+            }
+            
+            .page-title,
+            .journey-map,
+            footer {
+                padding: 30px 20px;
+            }
+        }
+
+        /* Currency Formatting */
+        .rupee {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FF6B35;
+        }
+
+        .date-blue {
+            color: #006994;
+        }
+
+        /* Realistic Photo Borders */
+        .photo-border {
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Dividers */
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(to right, #FF6B35, #006994);
+            margin: 40px 0;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Travel Photography Background -->
+    <div class="travel-background"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-plane"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Global<span>Trotter</span></h1>
+                    <p>TRAVEL PLANNING EXPERTS</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="current-trip">
+                    <h3>European Adventure</h3>
+                    <p>June 15 - 27, 2023</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">RK</div>
+                    <div class="user-details">
+                        <h3>Rahul Kumar</h3>
+                        <p><i class="fas fa-passport"></i> Traveler ID: GT2023</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Header -->
+        <div class="page-title">
+            <div class="title-content">
+                <div class="title-text">
+                    <h2>Travel <span>Itinerary</span></h2>
+                    <p>Your complete travel plan with all bookings, schedules, and important details in one place.</p>
+                </div>
+                <div class="title-actions">
+                    <button class="action-btn print-btn" id="printBtn">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="action-btn add-btn" id="addBtn">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Overview -->
+        <div class="trip-overview">
+            <div class="overview-item">
+                <div class="overview-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="overview-value">3</div>
+                <div class="overview-label">Trip Sections</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-icon">
+                    <i class="fas fa-rupee-sign"></i>
+                </div>
+                <div class="overview-value">₹2.34L</div>
+                <div class="overview-label">Total Budget</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="overview-value">12</div>
+                <div class="overview-label">Travel Days</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="overview-value">4</div>
+                <div class="overview-label">Destinations</div>
+            </div>
+        </div>
+
+        <!-- Section Divider -->
+        <div class="section-divider"></div>
+
+        <!-- Itinerary Sections -->
+        <div class="section-header">
+            <h3>Your Travel Itinerary</h3>
+            <p>All travel arrangements organized by date and category</p>
+        </div>
+
+        <div class="itinerary-container">
+            <!-- Flight Section -->
+            <div class="itinerary-item">
+                <div class="item-header">
+                    <div class="item-title">
+                        <div class="item-icon">
+                            <i class="fas fa-plane-departure"></i>
+                        </div>
+                        <div class="item-text">
+                            <h4>Mumbai to Paris Flights</h4>
+                            <p>Air India • First Class</p>
+                        </div>
+                    </div>
+                    <div class="item-status">
+                        <i class="fas fa-check-circle"></i> Confirmed
+                    </div>
+                </div>
+                <div class="item-content">
+                    <div class="item-description">
+                        Booked direct flights from Mumbai to Paris with Air India. Includes checked baggage, in-flight meals, 
+                        and priority boarding. Departure: 02:30 AM IST, Arrival: 09:30 AM CEST.
+                    </div>
+                    <div class="item-details">
+                        <div class="detail-item">
+                            <h5><i class="far fa-calendar"></i> Dates</h5>
+                            <div class="detail-value date-blue">June 15-16</div>
+                        </div>
+                        <div class="detail-item">
+                            <h5><i class="fas fa-wallet"></i> Budget</h5>
+                            <div class="detail-value orange">₹98,500</div>
+                        </div>
+                        <div class="detail-item">
+                            <h5><i class="fas fa-clock"></i> Duration</h5>
+                            <div class="detail-value blue">9h 30m</div>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="item-btn edit-item">
+                            <i class="fas fa-edit"></i> Edit Booking
+                        </button>
+                        <button class="item-btn view-item">
+                            <i class="fas fa-eye"></i> View Tickets
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotel Section -->
+            <div class="itinerary-item">
+                <div class="item-header">
+                    <div class="item-title">
+                        <div class="item-icon">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                        <div class="item-text">
+                            <h4>Le Marais Luxury Hotel</h4>
+                            <p>Paris Center • 5 Star</p>
+                        </div>
+                    </div>
+                    <div class="item-status" style="background: rgba(255, 107, 53, 0.2); color: #FF6B35;">
+                        <i class="fas fa-clock"></i> Payment Pending
+                    </div>
+                </div>
+                <div class="item-content">
+                    <div class="item-description">
+                        5-star boutique hotel in Le Marais district. Includes breakfast, Wi-Fi, spa access, and city view suite. 
+                        Centrally located for easy access to Paris attractions.
+                    </div>
+                    <div class="item-details">
+                        <div class="detail-item">
+                            <h5><i class="far fa-calendar"></i> Stay Duration</h5>
+                            <div class="detail-value date-blue">June 16-23</div>
+                        </div>
+                        <div class="detail-item">
+                            <h5><i class="fas fa-wallet"></i> Budget</h5>
+                            <div class="detail-value orange">₹1,15,000</div>
+                        </div>
+                        <div class="detail-item">
+                            <h5><i class="fas fa-star"></i> Rating</h5>
+                            <div class="detail-value blue">4.8/5</div>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="item-btn edit-item">
+                            <i class="fas fa-edit"></i> Modify Booking
+                        </button>
+                        <button class="item-btn view-item">
+                            <i class="fas fa-eye"></i> Hotel Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activities Section -->
+            <div class="itinerary-item">
+                <div class="item-header">
+                    <div class="item-title">
+                        <div class="item-icon">
+                            <i class="fas fa-landmark"></i>
+                        </div>
+                        <div class="item-text">
+                            <h4>Paris Cultural Tours</h4>
+                            <p>VIP Experiences • Guided Tours</p>
+                        </div>
+                    </div>
+                    <div class="item-status">
+                        <i class="fas fa-check-circle"></i> Booked
+                    </div>
+                </div>
+                <div class="item-content">
+                    <div class="item-description">
+                        Guided tours to Louvre Museum, Eiffel Tower summit, Seine River cruise, and Versailles day trip. 
+                        Includes skip-the-line tickets and expert English-speaking guides.
+                    </div>
+                    <div class="item-details">
+                        <div class="detail-item">
+                            <h5><i class="far fa-calendar"></i> Activity Dates</h5>
+                            <div class="detail-value date-blue">June 17-26</div>
+                        </div>
+                        <div class="detail-item">
+                            <h5><i class="fas fa-wallet"></i> Budget</h5>
+                            <div class="detail-value orange">₹95,000</div>
+                        </div>
+                        <div class="detail-item">
+                            <h5><i class="fas fa-map-marked-alt"></i> Tours</h5>
+                            <div class="detail-value blue">8 Premium</div>
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="item-btn edit-item">
+                            <i class="fas fa-edit"></i> Edit Schedule
+                        </button>
+                        <button class="item-btn view-item">
+                            <i class="fas fa-eye"></i> Tour Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journey Map -->
+        <div class="journey-map">
+            <div class="map-header">
+                <h3>Travel Route Map</h3>
+                <button class="action-btn print-btn">
+                    <i class="fas fa-expand-alt"></i> Full View
+                </button>
+            </div>
+            <div class="map-container photo-border">
+                <div class="map-image"></div>
+                <div class="map-point point-blue point-mumbai" title="Mumbai, India">
+                    <i class="fas fa-plane-departure"></i>
+                </div>
+                <div class="map-point point-orange point-paris" title="Paris, France">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <div class="map-point point-blue point-rome" title="Rome, Italy">
+                    <i class="fas fa-landmark"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>GlobalTrotter</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-info-circle" style="color: #006994;"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-briefcase" style="color: #FF6B35;"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-newspaper" style="color: #006994;"></i> Press</a></li>
+                        <li><a href="#"><i class="fas fa-blog" style="color: #FF6B35;"></i> Travel Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-plane" style="color: #006994;"></i> Flight Booking</a></li>
+                        <li><a href="#"><i class="fas fa-hotel" style="color: #FF6B35;"></i> Hotel Reservations</a></li>
+                        <li><a href="#"><i class="fas fa-map-marked-alt" style="color: #006994;"></i> Tour Packages</a></li>
+                        <li><a href="#"><i class="fas fa-car" style="color: #FF6B35;"></i> Transportation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-headset" style="color: #006994;"></i> 24/7 Support</a></li>
+                        <li><a href="#"><i class="fas fa-shield-alt" style="color: #FF6B35;"></i> Travel Insurance</a></li>
+                        <li><a href="#"><i class="fas fa-passport" style="color: #006994;"></i> Visa Assistance</a></li>
+                        <li><a href="#"><i class="fas fa-ambulance" style="color: #FF6B35;"></i> Emergency Help</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-phone" style="color: #006994;"></i> +91 98765 43210</a></li>
+                        <li><a href="#"><i class="fas fa-envelope" style="color: #FF6B35;"></i> travel@globaltrotter.com</a></li>
+                        <li><a href="#"><i class="fas fa-map-marker-alt" style="color: #006994;"></i> Mumbai, India</a></li>
+                        <li><a href="#"><i class="fas fa-clock" style="color: #FF6B35;"></i> Mon-Sun: 9AM-9PM</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2023 GlobalTrotter Travel Services. All rights reserved.</p>
+                <p>Your journey, perfectly planned. | Terms & Conditions | Privacy Policy</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Print button functionality
+            document.getElementById('printBtn').addEventListener('click', function() {
+                alert('Print functionality would generate a printable version of your itinerary.');
+            });
+
+            // Add button functionality
+            document.getElementById('addBtn').addEventListener('click', function() {
+                alert('Add new travel item functionality would open a booking form.');
+            });
+
+            // Edit and View buttons
+            const editButtons = document.querySelectorAll('.edit-item');
+            const viewButtons = document.querySelectorAll('.view-item');
+
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemTitle = this.closest('.itinerary-item').querySelector('.item-text h4').textContent;
+                    showNotification(`Editing: ${itemTitle}`);
+                });
+            });
+
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemTitle = this.closest('.itinerary-item').querySelector('.item-text h4').textContent;
+                    showNotification(`Viewing details: ${itemTitle}`);
+                });
+            });
+
+            // Map point interactions
+            const mapPoints = document.querySelectorAll('.map-point');
+            mapPoints.forEach(point => {
+                point.addEventListener('click', function() {
+                    const location = this.getAttribute('title');
+                    showNotification(`Viewing: ${location}`);
+                });
+            });
+
+            // Notification function
+            function showNotification(message) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                
+                // Style notification
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 30px;
+                    right: 30px;
+                    background: #006994;
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                    z-index: 1000;
+                    border-left: 5px solid #FF6B35;
+                    font-weight: 500;
+                    transform: translateX(150%);
+                    transition: transform 0.3s ease;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Animate in
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 10);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(150%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            // Add subtle hover effect to overview items
+            const overviewItems = document.querySelectorAll('.overview-item');
+            overviewItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.overview-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(1.1)';
+                    }
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.overview-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(1)';
+                    }
+                });
+            });
+
+            // Format currency display
+            const budgetElements = document.querySelectorAll('.detail-value.orange');
+            budgetElements.forEach(el => {
+                const text = el.textContent;
+                if (text.startsWith('₹')) {
+                    const amount = text.substring(1);
+                    if (amount.includes('L')) {
+                        el.innerHTML = `<span style="font-size: 20px;">₹</span>${amount}`;
+                    } else {
+                        el.innerHTML = `<span style="font-size: 20px;">₹</span>${amount}`;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
